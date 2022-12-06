@@ -22,6 +22,7 @@ ref_gff = {
 		'GCF_000005575.2_AgamP3_genomic.gff'),
     'cpip': Path(gff_directory,
 		'GCF_016801865.1_TS_Cpip_V1_genomic.gff')
+}
 
 rule orthofinder:
     input:
@@ -32,8 +33,8 @@ rule orthofinder:
         'output/logs/orthofinder.log'
     params:
         input_dir = proteomes_directory,
-	output_dir = 'output/orthoresult',
-	output = 'Results'
+	    output_dir = 'output/orthoresult',
+	    output = 'Results'
     threads:
         workflow.cores
     resources:
@@ -45,13 +46,13 @@ rule orthofinder:
         'orthofinder '
         '-f {params.input_dir} '
         '-o {params.output_dir} '
-	'-n {params.output} '
+	    '-n {params.output} '
         '-t {threads} '
         '&> {log}'
 
 rule separated_transcript_protein_tables:
     input:
-	gff = lambda wildcards: ref_gff[wildcards.species]
+	    gff = lambda wildcards: ref_gff[wildcards.species]
     output:
         output_tables = 'output/separated_transcript_protein_tables/{species}.csv'
     log:
@@ -61,6 +62,6 @@ rule separated_transcript_protein_tables:
     resources:
         time = '0-0:20:00'
     container:
-	'docker://ghcr.io/tomharrop/r-containers:latest'
+	    'docker://ghcr.io/tomharrop/r-containers:latest'
     script:
-	'separated_transcript_protein.R'
+	    'separated_transcript_protein.R'
