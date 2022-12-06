@@ -13,6 +13,15 @@ ref_proteomes = {
                  'GCF_016801865.1_TS_Cpip_V1_protein.faa')
 }
 
+gff_directory = 'data/gff'
+
+ref_gff = {
+    'aalb': Path(gff_directory,
+		'GCF_006496715.1_Aalbo_primary.1_genomic.gff'),
+    'agam': Path(gff_directory,
+		'GCF_000005575.2_AgamP3_genomic.gff'),
+    'cpip': Path(gff_directory,
+		'GCF_016801865.1_TS_Cpip_V1_genomic.gff')
 
 rule orthofinder:
     input:
@@ -39,3 +48,19 @@ rule orthofinder:
 	'-n {params.output} '
         '-t {threads} '
         '&> {log}'
+
+rule separated_transcript_protein_tables:
+    input:
+	gff = lambda wildcards: ref_gff[wildcards.species]
+    output:
+        output_tables = 'output/separated_transcript_protein_tables/{species}.csv’
+    log:
+        'output/logs/separated_transcript_protein_tables_{species}.log'
+    threads:
+        1
+    resources:
+        time = '0-0:20:00'
+    container:
+	'docker://ghcr.io/tomharrop/r-containers:latest’
+    script:
+	'separated_transcript_protein.R'

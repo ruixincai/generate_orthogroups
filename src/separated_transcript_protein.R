@@ -1,3 +1,8 @@
+log <- file(snakemake@log[[1]],
+            open = "wt")
+sink(log, type = "message")
+sink(log, append = TRUE, type = "output")
+
 library(data.table)
 library(rtracklayer)
 
@@ -8,7 +13,7 @@ library(rtracklayer)
 # mc[ID == cds_parent, unique(Parent)]}
 
 # import and read the gff
-gff <- import.gff("/generate_orthogroups/data/gff/*.gff")
+gff <- import.gff(snakemake@input[['gff']])
 
 
 
@@ -26,4 +31,6 @@ cds_out <- unique(cds[, .(gene = gene,
                           transcript_id = parent_char)])
 
 
-fwrite(cds_out, '*.csv')
+fwrite(cds_out, snakemake@output[['output_tables']])
+
+sessionInfo()
