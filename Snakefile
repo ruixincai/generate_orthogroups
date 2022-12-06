@@ -24,6 +24,13 @@ ref_gff = {
 		'GCF_016801865.1_TS_Cpip_V1_genomic.gff')
 }
 
+# leave this as the first rule
+rule target:
+    input:
+        'output/orthoresult/Results/Orthogroups/Orthogroups.tsv',
+        expand('output/separated_transcript_protein_tables/{species}.csv',
+               species=list(ref_gff.keys()))
+
 rule orthofinder:
     input:
         input_files = ref_proteomes.values()
