@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# snakefile
+
 from pathlib import Path
 
 proteomes_directory = 'data/proteomes'
