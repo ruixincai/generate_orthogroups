@@ -18,11 +18,13 @@ rule orthofinder:
     input:
         input_files = ref_proteomes.values()
     output:
-        output_dir = 'output/orthoresult'
+        orthoresult = 'output/orthoresult/Results/Orthogroups/Orthogroups.tsv'
     log:
         'output/logs/orthofinder.log'
     params:
-        input_dir = proteomes_directory
+        input_dir = proteomes_directory,
+	output_dir = 'output/orthoresult',
+	output = 'Results'
     threads:
         workflow.cores
     resources:
@@ -33,6 +35,7 @@ rule orthofinder:
     shell:
         'orthofinder '
         '-f {params.input_dir} '
-        '-o {output.output_dir} '
+        '-o {params.output_dir} '
+	'-n {params.output} '
         '-t {threads} '
         '&> {log}'
