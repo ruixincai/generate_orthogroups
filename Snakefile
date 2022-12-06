@@ -53,7 +53,7 @@ rule separated_transcript_protein_tables:
     input:
 	gff = lambda wildcards: ref_gff[wildcards.species]
     output:
-        output_tables = 'output/separated_transcript_protein_tables/{species}.csv’
+        output_tables = 'output/separated_transcript_protein_tables/{species}.csv'
     log:
         'output/logs/separated_transcript_protein_tables_{species}.log'
     threads:
@@ -61,6 +61,6 @@ rule separated_transcript_protein_tables:
     resources:
         time = '0-0:20:00'
     container:
-	'docker://ghcr.io/tomharrop/r-containers:latest’
+	'docker://ghcr.io/tomharrop/r-containers:latest'
     script:
 	'separated_transcript_protein.R'
