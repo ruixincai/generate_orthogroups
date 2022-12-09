@@ -69,6 +69,6 @@ rule separated_transcript_protein_tables:
     resources:
         time = '0-0:20:00'
     container:
-	    'docker://ghcr.io/tomharrop/r-containers:latest'
+	    'docker://ghcr.io/tomharrop/r-containers:bioconductor_3.17'
     script:
 	    'separated_transcript_protein.R'
