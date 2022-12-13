@@ -33,7 +33,7 @@ rule target:
 
 rule orthofinder:
     input:
-        input_files = ref_proteomes.values()
+        input_files = ref_proteomes.values() # Path()
     output:
         orthoresult = 'output/orthoresult/Results/Orthogroups/Orthogroups.tsv'
     log:
@@ -50,6 +50,7 @@ rule orthofinder:
     container:
         'docker://quay.io/biocontainers/orthofinder:2.5.4--hdfd78af_0'
     shell:
+        'rm -r {params.output_dir} && ' # change directory to output_dir 
         'orthofinder '
         '-f {params.input_dir} '
         '-o {params.output_dir} '
@@ -71,4 +72,4 @@ rule separated_transcript_protein_tables:
     container:
 	    'docker://ghcr.io/tomharrop/r-containers:bioconductor_3.17'
     script:
-	    'separated_transcript_protein.R'
+	    'src/separated_transcript_protein.R'
