@@ -29,7 +29,7 @@ rule target:
     input:
         'output/orthoresult/Results/Orthogroups/Orthogroups.tsv',
         expand('output/separated_transcript_protein_tables/{species}.csv',
-               species=list(ref_gff.keys()))
+               species=list(ref_gff.keys())),
         'output/combined_table.csv',
         'output/ortho_match.csv',
         directory('output/separated_orthogroups')
