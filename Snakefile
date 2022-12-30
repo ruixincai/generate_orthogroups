@@ -30,6 +30,10 @@ rule target:
         'output/orthoresult/Results/Orthogroups/Orthogroups.tsv',
         expand('output/separated_transcript_protein_tables/{species}.csv',
                species=list(ref_gff.keys()))
+        'output/combined_table.csv',
+        'output/ortho_match.csv',
+        directory('output/separated_orthogroups')
+
 
 rule orthofinder:
     input:
@@ -73,3 +77,56 @@ rule separated_transcript_protein_tables:
 	    'docker://ghcr.io/tomharrop/r-containers:bioconductor_3.17'
     script:
 	    'src/separated_transcript_protein.R'
+
+rule combined_transcript_protein_table:
+    input:
+        input_files = expand('output/separated_transcript_protein_tables/{species}.csv', 
+            species=list(ref_gff.keys()))
+    output:
+        output_file = 'output/combined_table.csv'
+    log:
+        'output/logs/combined_transcript_protein_table.log'
+    threads:
+        1
+    resources:
+        time = '0-0:20:00'
+    container:
+        'docker://ghcr.io/tomharrop/r-containers:bioconductor_3.17' # r-bundle-bioconductor/3.12-r-4.0.4
+    script:
+        'src/combined_transcript_protein.R'
+
+
+rule ortho_match:
+    input:
+        input_orthofinder = 'output/orthoresult/Results/Orthogroups/Orthogroups.tsv',
+        input_combinedtable = 'output/combined_table.csv'
+    output:
+        output_file = 'output/ortho_match.csv'
+    log:
+        'output/logs/ortho_match.log'
+    threads:
+        1
+    resources:
+        time = '0-0:30:00'
+    container:
+        'docker://ghcr.io/tomharrop/r-containers:bioconductor_3.17' # r-bundle-bioconductor/3.12-r-4.0.4
+    script:
+        'src/ortho_match.R'
+
+
+rule separated_orthogroups:
+    input:
+        input_file = 'output/ortho_match.csv'
+    output:
+        output_dir = directory('output/separated_orthogroups')
+    log:
+        'output/logs/separated_orthogroups.log' 
+    threads:
+        1
+    resources:
+        time = '0-0:20:00'
+    container:
+        'docker://ghcr.io/tomharrop/r-containers:bioconductor_3.17' # r-bundle-bioconductor/3.12-r-4.0.4
+    script:
+        'src/separate_ortho.R'
+
