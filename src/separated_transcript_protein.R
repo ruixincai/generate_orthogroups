@@ -30,7 +30,6 @@ cds_out <- unique(cds[, .(gene = gene,
                           protein_id = protein_id,
                           transcript_id = parent_char)])
 
-
 fwrite(cds_out, snakemake@output[['output_tables']])
 
 sessionInfo()
