@@ -24,6 +24,17 @@ ref_gff = {
 		'GCF_016801865.1_TS_Cpip_V1_genomic.gff')
 }
 
+transcript_directory = 'data/transcripts'
+
+ref_transcripts = {
+    'aalb': Path(transcript_directory,
+        'GCF_006496715.1_Aalbo_primary.1_rna.fna'),
+    'agam': Path(transcript_directory,
+        'GCF_000005575.2_AgamP3_rna.fna'),
+    'cpip': Path(transcript_directory,
+        'GCF_016801865.1_TS_Cpip_V1_rna.fna')
+}
+
 # leave this as the first rule
 rule target:
     input:
@@ -32,7 +43,10 @@ rule target:
                species=list(ref_gff.keys())),
         'output/combined_table.csv',
         'output/ortho_match.csv',
-        directory('output/separated_orthogroups')
+        directory('output/separated_orthogroups'),
+        "data/transcripts/combined_transcripts.fa",
+        expand(og_seq_output,
+            og = all_og_ids)
 
 
 rule orthofinder:
@@ -61,6 +75,7 @@ rule orthofinder:
 	    '-n {params.output} '
         '-t {threads} '
         '&> {log}'
+
 
 rule separated_transcript_protein_tables:
     input:
@@ -114,7 +129,8 @@ rule ortho_match:
         'src/ortho_match.R'
 
 
-rule separated_orthogroups:
+# an number of file is created in a defined directory
+checkpoint separated_orthogroups:
     input:
         input_file = 'output/ortho_match.csv'
     output:
@@ -129,4 +145,56 @@ rule separated_orthogroups:
         'docker://ghcr.io/tomharrop/r-containers:bioconductor_3.17' # r-bundle-bioconductor/3.12-r-4.0.4
     script:
         'src/separate_ortho.R'
+
+
+def aggregate(wildcards):
+    # look up the ouptputs for the checkpoint
+    checkpoint_output = checkpoints.separated_orthogroups.get(**wildcards).output['output_dir']
+    # glob the output
+    og_txt_path = 'output/separated_orthogroups/{og}.txt'
+    all_og_ids = glob_wildcards(og_txt_path).og
+    og_seq_output = "output/separate_fa/{og}.fa"
+    # we MUST return a list of files we want
+    return(expand(og_seq_output,
+        og = all_og_ids))
+
+rule transcripts_merge:
+    input:
+        transcripts = ref_transcripts.values()
+    output:
+        "data/transcripts/combined_transcripts.fa"
+    shell:
+        "cat {input} > {output}"
+
+# the checkpoint that shall trigger re-evaluation of the DAG
+rule og_seq:
+    input:
+        "output/separated_orthogroups/{og}.txt",
+        "data/transcripts/combined_transcripts.fa"
+    output:
+        "output/separate_fa/{og}.fa"
+    log:
+        'output/logs/og_seq.log'
+    resources:
+        mem_mb = '20480',
+        time = '0-20:0:00'
+    container:
+        bbmap = ('https://quay.io/repository/biocontainers/bbmap')
+    shell:
+        arr=('output/separated_orthogroups/{og}.txt')
+        for f in "${arr[@]}"; do
+            # f will be a path, e.g. separate_ortho/OG000001.txt
+            input_fn="$(basename "${f}")"
+            # generate a new filename for output
+            outfile=/output/separate_fa/"${input_fn/.txt/.fa}"
+            filterbyname.sh in="data/transcripts/combined_transcripts.fa" names="${f}" out="${outfile}"$
+        done
+        
+
+rule aggregate:
+    input:
+        aggregate
+
+
+
 
