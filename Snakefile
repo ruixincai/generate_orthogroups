@@ -40,7 +40,7 @@ ref_transcripts = {
 # leave this as the first rule
 rule target:
     input:
-        'output/orthoresult/Results/Orthogroups/Orthogroups.tsv',
+        'output/orthoresult/Results_Results/Orthogroups/Orthogroups.tsv',
         expand('output/separated_transcript_protein_tables/{species}.csv',
                species=list(ref_gff.keys())),
         'output/combined_table.csv',
@@ -113,7 +113,7 @@ rule combined_transcript_protein_table:
 
 rule ortho_match:
     input:
-        input_orthofinder = 'output/orthoresult/Results/Orthogroups/Orthogroups.tsv',
+        input_orthofinder = 'output/orthoresult/Results_Results/Orthogroups/Orthogroups.tsv',
         input_combinedtable = 'output/combined_table.csv'
     output:
         output_file = 'output/ortho_match.csv'
