@@ -4,6 +4,8 @@ from pathlib import Path
 
 proteomes_directory = 'data/proteomes'
 
+bbmap = 'https://quay.io/repository/biocontainers/bbmap:39.01--h5c4e2a8_0'
+
 ref_proteomes = {
     'aalb': Path(proteomes_directory,
                  'GCF_006496715.1_Aalbo_primary.1_protein.faa'),
@@ -44,9 +46,7 @@ rule target:
         'output/combined_table.csv',
         'output/ortho_match.csv',
         directory('output/separated_orthogroups'),
-        "data/transcripts/combined_transcripts.fa",
-        expand(og_seq_output,
-            og = all_og_ids)
+        "data/transcripts/combined_transcripts.fa"
 
 
 rule orthofinder:
@@ -160,7 +160,7 @@ def aggregate(wildcards):
 
 rule transcripts_merge:
     input:
-        transcripts = ref_transcripts.values()
+        ref_transcripts.values()
     output:
         "data/transcripts/combined_transcripts.fa"
     shell:
@@ -169,26 +169,23 @@ rule transcripts_merge:
 # the checkpoint that shall trigger re-evaluation of the DAG
 rule og_seq:
     input:
-        "output/separated_orthogroups/{og}.txt",
-        "data/transcripts/combined_transcripts.fa"
+        og_txt = "output/separated_orthogroups/{og}.txt",
+        ref_trans = "data/transcripts/combined_transcripts.fa"
     output:
         "output/separate_fa/{og}.fa"
     log:
-        'output/logs/og_seq.log'
+        'output/logs/og_seq.{og}.log'
     resources:
-        mem_mb = '20480',
-        time = '0-20:0:00'
+        time = '0-0:1:00'
     container:
-        bbmap = ('https://quay.io/repository/biocontainers/bbmap')
+        bbmap
     shell:
-        arr=('output/separated_orthogroups/{og}.txt')
-        for f in "${arr[@]}"; do
-            # f will be a path, e.g. separate_ortho/OG000001.txt
-            input_fn="$(basename "${f}")"
-            # generate a new filename for output
-            outfile=/output/separate_fa/"${input_fn/.txt/.fa}"
-            filterbyname.sh in="data/transcripts/combined_transcripts.fa" names="${f}" out="${outfile}"$
-        done
+        'filterbyname.sh '
+        'in={input.ref_trans} ' 
+        'names={input.og_txt} ' 
+        'out={output} '
+        '&>{log}'
+        
         
 
 rule aggregate:
