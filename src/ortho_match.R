@@ -4,7 +4,7 @@ sink(log, append = TRUE, type = "output")
 library(data.table)
 # or use library(dplyr)
 # dplyr equivalent: read_csv
-og_wide <- fread(snakemake@input['input_orthofinder'])
+og_wide <- fread(snakemake@input[['input_orthofinder']])
 # convert to a *long* data.table
 og_long <- melt(og_wide, id.vars = "Orthogroup", 
                 variable.name = "species", 
