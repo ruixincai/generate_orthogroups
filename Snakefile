@@ -53,7 +53,7 @@ rule orthofinder:
     input:
         input_files = ref_proteomes.values() # Path()
     output:
-        orthoresult = 'output/orthoresult/Results/Orthogroups/Orthogroups.tsv'
+        orthoresult = 'output/orthoresult/Results_Results/Orthogroups/Orthogroups.tsv'
     log:
         'output/logs/orthofinder.log'
     params:
