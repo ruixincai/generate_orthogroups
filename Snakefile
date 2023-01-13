@@ -4,7 +4,7 @@ from pathlib import Path
 
 proteomes_directory = 'data/proteomes'
 
-bbmap = 'https://quay.io/repository/biocontainers/bbmap:39.01--h5c4e2a8_0'
+bbmap = 'docker://quay.io/repository/biocontainers/bbmap:39.01--h5c4e2a8_0'
 
 ref_proteomes = {
     'aalb': Path(proteomes_directory,
@@ -49,6 +49,8 @@ rule target:
         "data/transcripts/combined_transcripts.fa"
 
 
+
+# Run the OrthoFinder on the reference protein sequences of three mosquito species in FASTA format
 rule orthofinder:
     input:
         input_files = ref_proteomes.values() # Path()
@@ -77,6 +79,8 @@ rule orthofinder:
         '&> {log}'
 
 
+# the protein accession number and the transcript accession number was paired separately 
+# in a single table for each species of mosquitoes
 rule separated_transcript_protein_tables:
     input:
 	    gff = lambda wildcards: ref_gff[wildcards.species]
@@ -93,6 +97,10 @@ rule separated_transcript_protein_tables:
     script:
 	    'src/separated_transcript_protein.R'
 
+
+# 3 CSV files generated before was combined into a single table database
+# a combined tabular database include all transcript accession numbers, protein accession numbers for 
+# 3 mosquito species is generated
 rule combined_transcript_protein_table:
     input:
         input_files = expand('output/separated_transcript_protein_tables/{species}.csv', 
@@ -111,6 +119,7 @@ rule combined_transcript_protein_table:
         'src/combined_transcript_protein.R'
 
 
+# Match the combined tabular database to the orthogroups generated from OrthoFinder
 rule ortho_match:
     input:
         input_orthofinder = 'output/orthoresult/Results_Results/Orthogroups/Orthogroups.tsv',
@@ -158,6 +167,8 @@ def aggregate(wildcards):
     return(expand(og_seq_output,
         og = all_og_ids))
 
+
+# combine 3 reference transcript sequences from three mosquito species into a single FASTA file
 rule transcripts_merge:
     input:
         ref_transcripts.values()
