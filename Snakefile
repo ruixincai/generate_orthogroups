@@ -45,7 +45,7 @@ rule target:
                species=list(ref_gff.keys())),
         'output/combined_table.csv',
         'output/ortho_match.csv',
-        directory('output/separated_orthogroups'),
+        'output/separated_orthogroups',
         "data/transcripts/combined_transcripts.fa"
 
 
@@ -162,7 +162,7 @@ def aggregate(wildcards):
     # glob the output
     og_txt_path = 'output/separated_orthogroups/{og}.txt'
     all_og_ids = glob_wildcards(og_txt_path).og
-    og_seq_output = "output/separate_fa/{og}.fa"
+    og_seq_output = "output/og_seq/{og}.fa"
     # we MUST return a list of files we want
     return(expand(og_seq_output,
         og = all_og_ids))
@@ -183,15 +183,17 @@ rule og_seq:
         og_txt = "output/separated_orthogroups/{og}.txt",
         ref_trans = "data/transcripts/combined_transcripts.fa"
     output:
-        "output/separate_fa/{og}.fa"
+        "output/og_seq/{og}.fa"
     log:
-        'output/logs/og_seq.{og}.log'
+        'output/logs/og_seq/og_seq.{og}.log'
     resources:
         time = '0-0:1:00'
     container:
         bbmap
     shell:
         'filterbyname.sh '
+        'include=true '
+        'prefix=true '
         'in={input.ref_trans} ' 
         'names={input.og_txt} ' 
         'out={output} '
