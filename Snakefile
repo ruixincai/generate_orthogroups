@@ -4,7 +4,7 @@ from pathlib import Path
 
 proteomes_directory = 'data/proteomes'
 
-bbmap = 'docker://quay.io/repository/biocontainers/bbmap:39.01--h5c4e2a8_0'
+bbmap = 'docker://quay.io/biocontainers/bbmap:39.01--h5c4e2a8_0'
 
 ref_proteomes = {
     'aalb': Path(proteomes_directory,
