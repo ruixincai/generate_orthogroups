@@ -6,6 +6,8 @@ proteomes_directory = 'data/proteomes'
 
 bbmap = 'docker://quay.io/biocontainers/bbmap:39.01--h5c4e2a8_0'
 
+pggb = 'docker://ghcr.io/pangenome/pggb:20230113201558a9a04c'
+
 ref_proteomes = {
     'aalb': Path(proteomes_directory,
                  'GCF_006496715.1_Aalbo_primary.1_protein.faa'),
@@ -198,8 +200,58 @@ rule og_seq:
         'names={input.og_txt} ' 
         'out={output} '
         '&>{log}'
-        
-        
+
+
+
+rule pggd_index:
+    input:
+        og_seq_fa = 'output/og_seq/{og}.fa'
+    output:
+        og_seq_index = 'output/og_seq/{og}.fa.gz',
+        index = 'output/og_seq/{og}.fa.gz.fai'
+    log:
+        'output/logs/pggb_index/{og}.log'
+    resources:
+        time = '0-0:1:00'
+    container: 
+        pggb
+    shell: 
+        'bgzip -c {input.og_seq_fa}  > {output.og_seq_index} 2> {log} '
+        '&& '
+        'samtools faidx {output.og_seq_index} &>> {log}'
+
+
+# pggb: Construct graphs for each orthogroup from transcript sequences of three mosquito species
+rule pggb:
+    input:
+        og_seq_index = 'output/og_seq/{og}.fa.gz',
+        index = 'output/og_seq/{og}.fa.gz.fai'
+    output:
+        directory('output/pggb/{og}')
+    log:
+        'output/logs/pggb/pggb.{og}.log'
+    resources:
+        time = '0-0:1:00'
+    container: 
+        pggb
+    threads:
+        1
+    shell:
+        'pggb '
+        '-i {input.og_seq_index} '
+        '-o {output} '
+        # number of haplotypes
+        '-n $( zgrep -c "^>" {input.og_seq_index} ) '
+        # number of threads
+        '-t {threads} '
+        # segment length for scaffolding the graph
+        # '-s '
+        # pairwise identity 
+        # '-p '
+        # pruning matches shorter than a given threshold from the initial graph model
+        # '-k '
+        '&>{log}'
+
 
 rule aggregate:
     input:
