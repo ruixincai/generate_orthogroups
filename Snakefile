@@ -247,10 +247,15 @@ rule pggb:
         # segment length for scaffolding the graph
         # '-s '
         # pairwise identity 
-        # '-p '
+        '-p 90'
         # pruning matches shorter than a given threshold from the initial graph model
         # '-k '
         '&>{log}'
+
+rule pggb_test:
+    input:
+        expand('output/pggb/{og}',og=['OG0012812','OG0009228','OG0007096','0009197','OG0010256','OG0012242','OG0004074','OG0000133', 'OG0008785','OG0001722'])
+
 
 
 rule aggregate:
