@@ -227,9 +227,9 @@ rule pggb:
         og_seq_index = 'output/og_seq/{og}.fa.gz',
         index = 'output/og_seq/{og}.fa.gz.fai'
     output:
-        directory('output/pggb/{og}')
+        directory('output/pggb/{og}.{identity}.{segment}')
     log:
-        'output/logs/pggb/pggb.{og}.log'
+        'output/logs/pggb/pggb.{og}.{identity}.{segment}.log'
     resources:
         time = '0-0:1:00'
     container: 
@@ -245,16 +245,22 @@ rule pggb:
         # number of threads
         '-t {threads} '
         # segment length for scaffolding the graph
-        # '-s '
+        '-s {wildcards.segment} '
         # pairwise identity 
-        '-p 90'
+        '-p {wildcards.identity} '
         # pruning matches shorter than a given threshold from the initial graph model
         # '-k '
         '&>{log}'
 
+# target orthogroups
+list_of_ogs = ['OG0012812','OG0009228','OG0007096','OG0009197','OG0010256','OG0012242','OG0004074','OG0000133', 'OG0008785','OG0001722']
+
 rule pggb_test:
     input:
-        expand('output/pggb/{og}',og=['OG0012812','OG0009228','OG0007096','OG0009197','OG0010256','OG0012242','OG0004074','OG0000133', 'OG0008785','OG0001722'])
+        expand('output/pggb/{og}.{identity}.{segment}',
+        	og=list_of_ogs,
+        	identity=[85, 90, 95],
+        	segments=[10, 100, 300, 3000])
 
 
 
