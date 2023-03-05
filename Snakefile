@@ -260,7 +260,7 @@ rule pggb_test:
         expand('output/pggb/{og}.{identity}.{segment}',
         	og=list_of_ogs,
         	identity=[85, 90, 95],
-        	segments=[10, 100, 300, 3000])
+        	segment=[10, 100, 300, 3000])
 
 
 
