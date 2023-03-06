@@ -259,8 +259,8 @@ rule pggb_test:
     input:
         expand('output/pggb/{og}.{identity}.{segment}',
         	og=list_of_ogs,
-        	identity=[85, 90, 95],
-        	segment=[10, 100, 300, 3000])
+        	identity=[85, 90, 95, 60],
+        	segment=[100, 300, 3000]) # min is 100bp
 
 
 
