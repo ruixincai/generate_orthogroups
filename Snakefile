@@ -264,7 +264,6 @@ rule pggb_test:
         	identity=[85, 90, 95, 60, 70, 80],
         	segment=[100, 300, 3000]) # minimum segment length is required to be >= 100 bp
 
-
 # rule vg_convert:
 	# input:
  		# gfa_input
@@ -289,12 +288,15 @@ rule vg_index:
     	'--threads 4 '
     	'--workflow mpmap'
 
-
 def gfa_input(wildcards):
-	pggb_dir = f'output/pggb/{wildcards.og}.{wildcards.identity}.{wildcards.segment}/{{filename}}.gfa'
-	gfa_file = glob_wildcards(pggb_dir).filename
+	# pggb_dir = f'output/pggb/{wildcards.og}.{wildcards.identity}.{wildcards.segment}/{{filename}}.gfa'
+	
 	gfa_file_path = 'output/pggb/{wildcards.og}.{wildcards.identity}.{wildcards.segment}/{{filename}}.gfa'
-	return(gfa_file)
+	gfa_file = glob_wildcards(gfa_file_path).filename
+	gfa_output = str("output/pggb/{wildcards.og}.{wildcards.identity}.{wildcards.segment}/{{filename}}.gfa")
+
+	return(expand(gfa_output,
+		filename = gfa_file)
 
 rule aggregate:
     input:
