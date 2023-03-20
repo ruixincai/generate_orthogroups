@@ -286,7 +286,7 @@ rule vg_index:
         4
     shell:
     	'vg autoindex '
-    	'--threads 4'
+    	'--threads 4 '
     	'--workflow mpmap'
 
 
