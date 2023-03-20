@@ -278,6 +278,14 @@ def gfa_input(wildcards):
     # gfa_output = str("output/pggb/{wildcards.og}.{wildcards.identity}.{wildcards.segment}/{{filename}}.gfa")
     return(expand(gfa_file_path,filename = gfa_file))
 
+
+rule vg_test: 
+    input:
+        expand('output/vg/index/{og}.{identity}.{segment}',
+            og=list_of_ogs,
+            identity=[85, 90, 95, 60, 70, 80],
+            segment=[100, 300, 3000])
+
 rule vg_index:
     input:
         gfa_input
