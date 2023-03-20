@@ -273,7 +273,7 @@ rule pggb_test:
 def gfa_input(wildcards):
     # pggb_dir = f'output/pggb/{wildcards.og}.{wildcards.identity}.{wildcards.segment}/{{filename}}.gfa'
     
-    gfa_file_path = 'output/pggb/{wildcards.og}.{wildcards.identity}.{wildcards.segment}/{{filename}}.gfa'
+    gfa_file_path = f'output/pggb/{wildcards.og}.{wildcards.identity}.{wildcards.segment}/{{filename}}.gfa'
     gfa_file = glob_wildcards(gfa_file_path).filename
     # gfa_output = str("output/pggb/{wildcards.og}.{wildcards.identity}.{wildcards.segment}/{{filename}}.gfa")
     return(expand(gfa_file_path,filename = gfa_file))
@@ -292,7 +292,7 @@ rule vg_index:
     output:
         directory('output/vg/index/{og}.{identity}.{segment}')
     log:
-        'output/logs/vg//vg_indexvg.{og}.{identity}.{segment}.log'
+        'output/logs/vg/vg_index.{og}.{identity}.{segment}.log'
     resources:
         time = '0-0:1:00'
     container: 
