@@ -270,6 +270,13 @@ rule pggb_test:
     # output:
         # 'output/vg/{og}.{identity}.{segment}'
 
+def gfa_input(wildcards):
+    # pggb_dir = f'output/pggb/{wildcards.og}.{wildcards.identity}.{wildcards.segment}/{{filename}}.gfa'
+    
+    gfa_file_path = 'output/pggb/{wildcards.og}.{wildcards.identity}.{wildcards.segment}/{{filename}}.gfa'
+    gfa_file = glob_wildcards(gfa_file_path).filename
+    # gfa_output = str("output/pggb/{wildcards.og}.{wildcards.identity}.{wildcards.segment}/{{filename}}.gfa")
+    return(expand(gfa_file_path,filename = gfa_file))
 
 rule vg_index:
     input:
@@ -289,13 +296,7 @@ rule vg_index:
         '--threads 4 '
         '--workflow mpmap'
 
-def gfa_input(wildcards):
-    # pggb_dir = f'output/pggb/{wildcards.og}.{wildcards.identity}.{wildcards.segment}/{{filename}}.gfa'
-    
-    gfa_file_path = 'output/pggb/{wildcards.og}.{wildcards.identity}.{wildcards.segment}/{{filename}}.gfa'
-    gfa_file = glob_wildcards(gfa_file_path).filename
-    # gfa_output = str("output/pggb/{wildcards.og}.{wildcards.identity}.{wildcards.segment}/{{filename}}.gfa")
-    return(expand(gfa_file_path,filename = gfa_file))
+
 
         
     #pggb_dir = str('output/pggb/{wildcards.og}.{wildcards.identity}.{wildcards.segment}/{{filename}}.gfa')
