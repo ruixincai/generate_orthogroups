@@ -8,6 +8,8 @@ bbmap = 'docker://quay.io/biocontainers/bbmap:39.01--h5c4e2a8_0'
 
 pggb = 'docker://ghcr.io/pangenome/pggb:20230113201558a9a04c'
 
+vg = 'docker://quay.io/vgteam/vg:v1.46.0'
+
 ref_proteomes = {
     'aalb': Path(proteomes_directory,
                  'GCF_006496715.1_Aalbo_primary.1_protein.faa'),
@@ -260,9 +262,39 @@ rule pggb_test:
         expand('output/pggb/{og}.{identity}.{segment}',
         	og=list_of_ogs,
         	identity=[85, 90, 95, 60, 70, 80],
-        	segment=[100, 300, 3000]) # min is 100bp
+        	segment=[100, 300, 3000]) # minimum segment length is required to be >= 100 bp
 
 
+rule vg_convert:
+ input:
+ 	# gfa_input
+ output:
+ 	'output/vg/{og}.{identity}.{segment}'
+
+rule vg_index:
+	input:
+		gfa_input
+	output:
+		directory('output/vg/index/{og}.{identity}.{segment}')
+	log:
+        'output/logs/vg/vg.{og}.{identity}.{segment}.log'
+    resources:
+        time = '0-0:1:00'
+    container: 
+        vg
+    threads:
+        4
+    shell:
+    	'vg autoindex '
+    	'--threads 4'
+    	'--workflow mpmap'
+
+
+def gfa_input(wildcards):
+	pggb_dir = f'output/pggb/{wildcards.og}.{wildcards.identity}.{wildcards.segment}/{{filename}}.gfa'
+	gfa_file = glob_wildcards(pggb_dir).filename
+	gfa_file_path = 'output/pggb/{wildcards.og}.{wildcards.identity}.{wildcards.segment}/{{filename}}.gfa'
+	return(gfa_file)
 
 rule aggregate:
     input:
