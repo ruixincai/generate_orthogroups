@@ -301,6 +301,7 @@ rule vg_index:
         4
     shell:
         'vg autoindex '
+        '--gfa {input} '
         '--threads 4 '
         '--workflow mpmap'
 
