@@ -224,12 +224,12 @@ rule pggd_index:
 
 
 # pggb: Construct graphs for each orthogroup from transcript sequences of three mosquito species
-rule pggb:
+checkpoint pggb:
     input:
         og_seq_index = 'output/og_seq/{og}.fa.gz',
         index = 'output/og_seq/{og}.fa.gz.fai'
     output:
-        directory('output/pggb/{og}.{identity}.{segment}')
+        output_dir = directory('output/pggb/{og}.{identity}.{segment}')
     log:
         'output/logs/pggb/pggb.{og}.{identity}.{segment}.log'
     resources:
@@ -272,8 +272,8 @@ rule pggb_test:
 
 def gfa_input(wildcards):
     # pggb_dir = f'output/pggb/{wildcards.og}.{wildcards.identity}.{wildcards.segment}/{{filename}}.gfa'
-    
-    gfa_file_path = f'output/pggb/{wildcards.og}.{wildcards.identity}.{wildcards.segment}/{{filename}}.gfa'
+    checkpoint_output = checkpoints.pggb.get(**wildcards).output['output_dir']
+    gfa_file_path = f'{checkpoint_output}/{{filename}}.gfa'
     gfa_file = glob_wildcards(gfa_file_path).filename
     # gfa_output = str("output/pggb/{wildcards.og}.{wildcards.identity}.{wildcards.segment}/{{filename}}.gfa")
     return(expand(gfa_file_path,filename = gfa_file))
