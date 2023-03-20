@@ -265,11 +265,11 @@ rule pggb_test:
         	segment=[100, 300, 3000]) # minimum segment length is required to be >= 100 bp
 
 
-rule vg_convert:
- input:
- 	# gfa_input
- output:
- 	'output/vg/{og}.{identity}.{segment}'
+# rule vg_convert:
+	# input:
+ 		# gfa_input
+	# output:
+ 		# 'output/vg/{og}.{identity}.{segment}'
 
 rule vg_index:
 	input:
