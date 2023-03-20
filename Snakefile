@@ -270,13 +270,14 @@ rule pggb_test:
 	# output:
  		# 'output/vg/{og}.{identity}.{segment}'
 
+
 rule vg_index:
 	input:
 		gfa_input
 	output:
 		directory('output/vg/index/{og}.{identity}.{segment}')
 	log:
-        'output/logs/vg/vg.{og}.{identity}.{segment}.log'
+        'output/logs/vg//vg_indexvg.{og}.{identity}.{segment}.log'
     resources:
         time = '0-0:1:00'
     container: 
@@ -291,12 +292,34 @@ rule vg_index:
 def gfa_input(wildcards):
 	# pggb_dir = f'output/pggb/{wildcards.og}.{wildcards.identity}.{wildcards.segment}/{{filename}}.gfa'
 	
-	gfa_file_path = 'output/pggb/{wildcards.og}.{wildcards.identity}.{wildcards.segment}/{{filename}}.gfa'
-	gfa_file = glob_wildcards(gfa_file_path).filename
-	gfa_output = str("output/pggb/{wildcards.og}.{wildcards.identity}.{wildcards.segment}/{{filename}}.gfa")
+	# gfa_file_path = 'output/pggb/{wildcards.og}.{wildcards.identity}.{wildcards.segment}/{{filename}}.gfa'
+	# gfa_file = glob_wildcards(gfa_file_path).filename
+	# gfa_output = str("output/pggb/{wildcards.og}.{wildcards.identity}.{wildcards.segment}/{{filename}}.gfa")
 
-	return(expand(gfa_output,
-		filename = gfa_file)
+	# return(expand(gfa_output,filename = gfa_file)
+	pggb_dir = str('output/pggb/{wildcards.og}.{wildcards.identity}.{wildcards.segment}/{{filename}}.gfa')
+    gfa_file = glob_wildcards(pggb_dir).filename
+    gfa_file_path = 'output/pggb/{wildcards.og}.{wildcards.identity}.{wildcards.segment}/{{filename}}.gfa'
+    return(gfa_file)
+
+rule vg:
+	input:
+
+	output:
+		directory('output/vg/vg_result/{og}.{identity}.{segment}')
+	log:
+        'output/logs/vg/vg.{og}.{identity}.{segment}.log'
+    resources:
+        time = '0-0:1:00'
+    container: 
+        vg
+    threads:
+        4
+    shell:
+    	'vg mpmap '
+    	'-n rna'
+    	'-t 4 '
+    	
 
 rule aggregate:
     input:
