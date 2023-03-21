@@ -303,7 +303,8 @@ rule vg_index:
         'vg autoindex '
         '--gfa {input} '
         '--threads 4 '
-        '--workflow mpmap'
+        '--workflow mpmap '
+        '&>{log}'
 
 
 
