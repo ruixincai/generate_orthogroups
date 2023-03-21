@@ -312,7 +312,7 @@ rule vg_index:
     input:
         gfa_input
     output:
-        directory('output/vg/index/{og}.{identity}.{segment}.xg')
+        directory('output/vg/index/{og}.{identity}.{segment}')
     log:
         'output/logs/vg/vg_index.{og}.{identity}.{segment}.log'
     resources:
