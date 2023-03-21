@@ -286,11 +286,33 @@ rule vg_test:
             identity=[85, 90, 95, 60, 70, 80],
             segment=[100, 300, 3000])
 
+# rule gfa2vg:
+    # input:
+        #gfa_input
+    #output:
+        #directory('output/vg/vg_version/{og}.{identity}.{segment}.vg')
+    #log:
+        #'output/logs/vg/vg_index.{og}.{identity}.{segment}.log'
+    # resources:
+        #time = '0-0:1:00'
+    #container: 
+        #vg
+    #threads:
+        #4
+    #shell:
+        #'vg convert '
+        #'-g {input} '
+        #'vg autoindex '
+        #'--gfa {input} '
+        #'--threads 4 '
+        #'--workflow mpmap '
+        #'&>{log}'
+
 rule vg_index:
     input:
         gfa_input
     output:
-        directory('output/vg/index/{og}.{identity}.{segment}')
+        directory('output/vg/index/{og}.{identity}.{segment}.xg')
     log:
         'output/logs/vg/vg_index.{og}.{identity}.{segment}.log'
     resources:
@@ -305,7 +327,6 @@ rule vg_index:
         '--threads 4 '
         '--workflow mpmap '
         '&>{log}'
-
 
 
         
