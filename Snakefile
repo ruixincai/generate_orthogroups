@@ -302,8 +302,9 @@ rule gfa2vg:
     shell:
         'vg convert '
         '-g {input} '
-        '-v {output} '
-        '&>{log}'
+        '-v '
+        '> {output} '
+        '2> {log}'
 
 #rule vg_index:
     #input:
