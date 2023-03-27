@@ -281,7 +281,7 @@ def gfa_input(wildcards):
 
 rule vg_test: 
     input:
-        expand('output/vg/vg_version/{og}.{identity}.{segment}.vg',
+        expand('output/vg/index/xg/{og}.{identity}.{segment}.xg',
             og=list_of_ogs,
             identity=[85, 90, 95, 60, 70, 80],
             segment=[100, 300, 3000])
@@ -297,8 +297,6 @@ rule gfa2vg:
         time = '0-0:1:00'
     container: 
         vg
-    threads:
-        4
     shell:
         'vg convert '
         '-g {input} '
@@ -306,25 +304,24 @@ rule gfa2vg:
         '> {output} '
         '2> {log}'
 
-#rule vg_index:
-    #input:
-        #gfa_input
-    #output:
-        #directory('output/vg/index/{og}.{identity}.{segment}')
-    #log:
-        #'output/logs/vg/vg_index.{og}.{identity}.{segment}.log'
-    #resources:
-        #time = '0-0:1:00'
-    #container: 
-        #vg
-    #threads:
-        #4
-    #shell:
-        #'vg autoindex '
-        #'--gfa {input} '
-        #'--threads 4 '
-        #'--workflow mpmap '
-        #'&>{log}'
+rule vg_index:
+    input:
+        'output/vg/vg_version/{og}.{identity}.{segment}.vg'
+    output:
+        xg = 'output/vg/index/xg/{og}.{identity}.{segment}.xg',
+        gcsa = 'output/vg/index/gcsa/{og}.{identity}.{segment}.gcsa'
+    log:
+        'output/logs/vg/vg_index.{og}.{identity}.{segment}.log'
+    resources:
+        time = '0-0:1:00'
+    container: 
+        vg
+    shell:
+        'vg index '
+        '-x {output.xg} '
+        '-g {output.gcsa} '
+        '{input} '
+        '&>{log}'
 
 
         
