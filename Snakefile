@@ -309,7 +309,8 @@ rule vg_index:
         'output/vg/vg_version/{og}.{identity}.{segment}.vg'
     output:
         xg = 'output/vg/index/xg/{og}.{identity}.{segment}.xg',
-        gcsa = 'output/vg/index/gcsa/{og}.{identity}.{segment}.gcsa'
+        gcsa = 'output/vg/index/gcsa/{og}.{identity}.{segment}.gcsa',
+        abcd = 'output/vg/index/gcsa/{og}.{identity}.{segment}.abcd'
     log:
         'output/logs/vg/vg_index.{og}.{identity}.{segment}.log'
     resources:
@@ -321,7 +322,8 @@ rule vg_index:
         '-x {output.xg} '
         '-g {output.gcsa} '
         '{input} '
-        '&>{log}'
+        '> {output.abcd} '
+        '2>{log}'
 
 
         
