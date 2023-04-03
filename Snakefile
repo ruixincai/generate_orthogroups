@@ -323,7 +323,7 @@ rule vg_index:
         '-x {output.xg} '
         '{input} '
         '&& '
-        'vg prune {input} > {output.xg_pruned} '
+        'vg prune -r {input} > {output.xg_pruned} '
         '&& '
         'vg index '
         '-g {output.gcsa} '
