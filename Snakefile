@@ -309,7 +309,7 @@ rule vg_index:
         'output/vg/vg_version/{og}.{identity}.{segment}.vg'
     output:
         xg = 'output/vg/index/xg/{og}.{identity}.{segment}.xg',
-        xg_pruned = 'output/vg/index/xg/{og}.{identity}.{segment}.pruned.vg',
+        xg_pruned = 'output/vg/index/xg_pruned/{og}.{identity}.{segment}.pruned.vg',
         gcsa = 'output/vg/index/gcsa/{og}.{identity}.{segment}.gcsa',
         abcd = 'output/vg/index/gcsa/{og}.{identity}.{segment}.abcd'
     log:
