@@ -311,7 +311,6 @@ rule vg_index:
         xg = 'output/vg/index/xg/{og}.{identity}.{segment}.xg',
         xg_pruned = 'output/vg/index/xg/{og}.{identity}.{segment}.pruned.vg',
         gcsa = 'output/vg/index/gcsa/{og}.{identity}.{segment}.gcsa'
-        # dist = 'output/vg/index/dist/{og}.{identity}.{segment}.dist'
     log:
         'output/logs/vg/vg_index.{og}.{identity}.{segment}.log'
     resources:
@@ -320,7 +319,6 @@ rule vg_index:
         vg
     shell:
         'vg index '
-        # '-j {output.dist} '
         '-x {output.xg} '
         '{input} '
         '&& '
@@ -330,7 +328,7 @@ rule vg_index:
         '-g {output.gcsa} '
         '{output.xg_pruned} '
         '&& '
-        'rm -f {output.xg_pruned} '
+        'rm -f {output.xg_pruned}'
         '2> {log}'
 
 
