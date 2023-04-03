@@ -320,7 +320,7 @@ rule vg_index:
         vg
     shell:
         'vg index '
-        '-j {output.dist} '
+        # '-j {output.dist} '
         '-x {output.xg} '
         '{input} '
         '&& '
