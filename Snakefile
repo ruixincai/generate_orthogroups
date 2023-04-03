@@ -309,6 +309,7 @@ rule vg_index:
         'output/vg/vg_version/{og}.{identity}.{segment}.vg'
     output:
         xg = 'output/vg/index/xg/{og}.{identity}.{segment}.xg',
+        xg_pruned = 'output/vg/index/xg/{og}.{identity}.{segment}.pruned.vg'
         gcsa = 'output/vg/index/gcsa/{og}.{identity}.{segment}.gcsa',
         abcd = 'output/vg/index/gcsa/{og}.{identity}.{segment}.abcd'
     log:
@@ -320,10 +321,13 @@ rule vg_index:
     shell:
         'vg index '
         '-x {output.xg} '
-        '-g {output.gcsa} '
         '{input} '
-        '> {output.abcd} '
-        '2>{log}'
+        'vg prune {input} > {output.xg_pruned} '
+        'vg index '
+        '-g {output.gcsa} '
+        '{output.xg_pruned} '
+        'rm -f {output.xg_pruned} '
+        '2> {log}'
 
 
         
@@ -332,23 +336,24 @@ rule vg_index:
     #gfa_file_path = 'output/pggb/{wildcards.og}.{wildcards.identity}.{wildcards.segment}/{{filename}}.gfa'
     #return(gfa_file)
 
-rule vg:
-    input:
+# rule vg:
+    #input:
 
-    output:
-        directory('output/vg/vg_result/{og}.{identity}.{segment}')
-    log:
-        'output/logs/vg/vg.{og}.{identity}.{segment}.log'
-    resources:
-        time = '0-0:1:00'
-    container: 
-        vg
-    threads:
-        4
-    shell:
-        'vg mpmap '
-        '-n rna'
-        '-t 4 '
+    
+    #output:
+        #directory('output/vg/vg_result/{og}.{identity}.{segment}')
+    #log:
+        #'output/logs/vg/vg.{og}.{identity}.{segment}.log'
+    #resources:
+        #time = '0-0:1:00'
+    #container: 
+        #vg
+    #threads:
+        #4
+    #shell:
+        #'vg mpmap '
+        #'-n rna'
+        #'-t 4 '
         
 
 rule aggregate:
