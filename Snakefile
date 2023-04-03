@@ -338,26 +338,24 @@ rule vg_index:
     #gfa_file_path = 'output/pggb/{wildcards.og}.{wildcards.identity}.{wildcards.segment}/{{filename}}.gfa'
     #return(gfa_file)
 
-rule vg:
-    input:
-        xg = 'output/vg/index/xg/{og}.{identity}.{segment}.xg',
-        gcsa = 'output/vg/index/gcsa/{og}.{identity}.{segment}.gcsa'
-    output:
-        'output/vg/vg_result/{og}.{identity}.{segment}.gamp'
-    log:
-        'output/logs/vg/vg_result/{og}.{identity}.{segment}.log'
-    resources:
-        time = '0-0:1:00'
-    container: 
-        vg
-    shell:
-        'vg mpmap '
-        '-n rna '
-        '-t 4 '
-        '-x {input.xg} '
-        '-g {input.gcsa} '
-        '> {output} '
-        '2> {log}'
+# rule vg:
+    #input:
+
+    
+    #output:
+        #directory('output/vg/vg_result/{og}.{identity}.{segment}')
+    #log:
+        #'output/logs/vg/vg.{og}.{identity}.{segment}.log'
+    #resources:
+        #time = '0-0:1:00'
+    #container: 
+        #vg
+    #threads:
+        #4
+    #shell:
+        #'vg mpmap '
+        #'-n rna'
+        #'-t 4 '
         
 
 rule aggregate:
