@@ -312,7 +312,9 @@ rule vg_index:
         xg_pruned = 'output/vg/index/xg/{og}.{identity}.{segment}.pruned.vg',
         gcsa = 'output/vg/index/gcsa/{og}.{identity}.{segment}.gcsa'
     log:
-        'output/logs/vg/vg_index.{og}.{identity}.{segment}.log'
+        xg_log = 'output/logs/vg/xg_log/vg_index.{og}.{identity}.{segment}.log',
+        xg_pruned_log = 'output/logs/vg/xg_pruned_log/vg_index.{og}.{identity}.{segment}.log',
+        gcsa_log = 'output/logs/vg/gcsa_log/vg_index.{og}.{identity}.{segment}.log'
     resources:
         time = '0-0:1:00'
     container: 
@@ -321,15 +323,16 @@ rule vg_index:
         'vg index '
         '-x {output.xg} '
         '{input} '
+        '2> {log.xg_log}'
         '&& '
         'vg prune -r {input} > {output.xg_pruned} '
+        '2> {log.xg_pruned_log}'
         '&& '
         'vg index '
         '-g {output.gcsa} '
         '{output.xg_pruned} '
-        '&& '
-        'rm -f {output.xg_pruned}'
-        '2> {log}'
+        '2> {log.gcsa_log}'
+        
 
 
         
