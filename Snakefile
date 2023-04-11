@@ -341,7 +341,8 @@ rule vg_index_pruned:
 
 rule vg_index_gcsa:
     input:
-        'output/vg/index/pruned/{og}.{identity}.{segment}.pruned.vg'
+        # 'output/vg/index/pruned/{og}.{identity}.{segment}.pruned.vg' sm3
+        'output/vg/vg_version/{og}.{identity}.{segment}.vg' # sm4
     output:
         'output/vg/index/gcsa/{og}.{identity}.{segment}.gcsa'
     log:
