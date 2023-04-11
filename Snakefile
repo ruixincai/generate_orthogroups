@@ -281,7 +281,7 @@ def gfa_input(wildcards):
 
 rule vg_test: 
     input:
-        expand('output/vg/index/snarls/{og}.{identity}.{segment}.trivial.snarls',
+        expand('output/vg/index/dist/{og}.{identity}.{segment}.dist',
             og=list_of_ogs,
             identity=[85, 90, 95, 60, 70, 80],
             segment=[100, 300, 3000])
@@ -362,7 +362,7 @@ rule vg_index_snarls:
     input:
         'output/vg/index/xg/{og}.{identity}.{segment}.xg'
     output:
-        'output/vg/index/snarls/{og}.{identity}.{segment}.trivial.snarls'
+        'output/vg/index/snarls/{og}.{identity}.{segment}.trivial.snarls' # sm5
     log:
         'output/logs/vg/snarls_log/vg_index.{og}.{identity}.{segment}.log'
     resources:
@@ -381,7 +381,7 @@ rule vg_index_dist:
         xg = 'output/vg/index/xg/{og}.{identity}.{segment}.xg',
         snarl = 'output/vg/index/snarls/{og}.{identity}.{segment}.trivial.snarls'
     output:
-        'output/vg/index/snarls/{og}.{identity}.{segment}.dist'
+        'output/vg/index/dist/{og}.{identity}.{segment}.dist'
     log:
         'output/logs/vg/dist_log/vg_index.{og}.{identity}.{segment}.log'
     resources:
