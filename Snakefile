@@ -381,7 +381,7 @@ rule vg_index_dist:
         xg = 'output/vg/index/xg/{og}.{identity}.{segment}.xg',
         snarl = 'output/vg/index/snarls/{og}.{identity}.{segment}.trivial.snarls'
     output:
-        'output/vg/index/dist/{og}.{identity}.{segment}.dist'
+        'output/vg/index/dist/{og}.{identity}.{segment}.dist' # sm6
     log:
         'output/logs/vg/dist_log/vg_index.{og}.{identity}.{segment}.log'
     resources:
