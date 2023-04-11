@@ -281,7 +281,7 @@ def gfa_input(wildcards):
 
 rule vg_test: 
     input:
-        expand('output/vg/index/pruned/{og}.{identity}.{segment}.pruned.vg',
+        expand('output/vg/index/gcsa/{og}.{identity}.{segment}.gcsa',
             og=list_of_ogs,
             identity=[85, 90, 95, 60, 70, 80],
             segment=[100, 300, 3000])
@@ -322,7 +322,7 @@ rule vg_index_xg:
         '{input} '
         '2> {log}'
 
-
+# sm2.log
 rule vg_index_pruned:
     input:
         'output/vg/vg_version/{og}.{identity}.{segment}.vg'
@@ -341,7 +341,7 @@ rule vg_index_pruned:
 
 rule vg_index_gcsa:
     input:
-        'output/vg/vg_version/{og}.{identity}.{segment}.vg'
+        'output/vg/index/pruned/{og}.{identity}.{segment}.pruned.vg'
     output:
         'output/vg/index/gcsa/{og}.{identity}.{segment}.gcsa'
     log:
@@ -352,17 +352,9 @@ rule vg_index_gcsa:
         vg
     shell:
         'vg index '
-        '-x {output.xg} '
+        '-g {output} '
         '{input} '
-        '2> {log.xg_log}'
-        '&& '
-        'vg prune -r {input} > {output.xg_pruned} '
-        '2> {log.xg_pruned_log}'
-        '&& '
-        'vg index '
-        '-g {output.gcsa} '
-        '{output.xg_pruned} '
-        '2> {log.gcsa_log}'
+        '2> {log}'
 
 
         
