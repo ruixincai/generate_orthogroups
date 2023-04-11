@@ -358,6 +358,23 @@ rule vg_index_gcsa:
         '2> {log}'
 
 
+rule vg_snarls:
+    input:
+        'output/vg/index/xg/{og}.{identity}.{segment}.xg'
+    output:
+        'output/vg/index/snarls/{og}.{identity}.{segment}.trivial.snarls'
+    log:
+        'output/logs/vg/snarls_log/vg_index.{og}.{identity}.{segment}.log'
+    resources:
+        time = '0-0:1:00'
+    container: 
+        vg
+    shell:
+        'vg snarls '
+        '-T {input} '
+        '> {output} '
+        '2> {log}'
+
         
     #pggb_dir = str('output/pggb/{wildcards.og}.{wildcards.identity}.{wildcards.segment}/{{filename}}.gfa')
     #gfa_file = glob_wildcards(pggb_dir).filename
