@@ -304,16 +304,56 @@ rule gfa2vg:
         '> {output} '
         '2> {log}'
 
-rule vg_index:
+rule vg_index_xg:
     input:
         'output/vg/vg_version/{og}.{identity}.{segment}.vg'
     output:
-        xg = 'output/vg/index/xg/{og}.{identity}.{segment}.xg',
-        xg_pruned = 'output/vg/index/xg/{og}.{identity}.{segment}.pruned.vg',
-        gcsa = 'output/vg/index/gcsa/{og}.{identity}.{segment}.gcsa'
+        'output/vg/index/xg/{og}.{identity}.{segment}.xg'
     log:
-        xg_log = 'output/logs/vg/xg_log/vg_index.{og}.{identity}.{segment}.log',
-        xg_pruned_log = 'output/logs/vg/xg_pruned_log/vg_index.{og}.{identity}.{segment}.log',
+        'output/logs/vg/xg_log/vg_index.{og}.{identity}.{segment}.log'
+    resources:
+        time = '0-0:1:00'
+    container: 
+        vg
+    shell:
+        'vg index '
+        '-x {output} '
+        '{input} '
+        '2> {log}'
+
+
+rule vg_index_pruned:
+    input:
+        'output/vg/vg_version/{og}.{identity}.{segment}.vg'
+    output:
+        'output/vg/index/xg/{og}.{identity}.{segment}.pruned.vg'
+    log:
+        xg_pruned_log = 'output/logs/vg/xg_pruned_log/vg_index.{og}.{identity}.{segment}.log'
+    resources:
+        time = '0-0:1:00'
+    container: 
+        vg
+    shell:
+        'vg index '
+        '-x {output.xg} '
+        '{input} '
+        '2> {log.xg_log}'
+        '&& '
+        'vg prune -r {input} > {output.xg_pruned} '
+        '2> {log.xg_pruned_log}'
+        '&& '
+        'vg index '
+        '-g {output.gcsa} '
+        '{output.xg_pruned} '
+        '2> {log.gcsa_log}'
+
+
+rule vg_index_gcsa:
+    input:
+        'output/vg/vg_version/{og}.{identity}.{segment}.vg'
+    output:
+        'output/vg/index/gcsa/{og}.{identity}.{segment}.gcsa'
+    log:
         gcsa_log = 'output/logs/vg/gcsa_log/vg_index.{og}.{identity}.{segment}.log'
     resources:
         time = '0-0:1:00'
@@ -332,7 +372,6 @@ rule vg_index:
         '-g {output.gcsa} '
         '{output.xg_pruned} '
         '2> {log.gcsa_log}'
-        
 
 
         
