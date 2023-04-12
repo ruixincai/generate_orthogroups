@@ -8,7 +8,7 @@ bbmap = 'docker://quay.io/biocontainers/bbmap:39.01--h5c4e2a8_0'
 
 pggb = 'docker://ghcr.io/pangenome/pggb:20230113201558a9a04c'
 
-vg = 'docker://quay.io/vgteam/vg:v1.46.0'
+vg = 'docker://quay.io/vgteam/vg:v1.47.0'
 
 ref_proteomes = {
     'aalb': Path(proteomes_directory,
