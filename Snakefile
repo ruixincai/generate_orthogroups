@@ -281,14 +281,11 @@ def gfa_input(wildcards):
 
 rule vg_test: 
     input:
-        expand('output/vg/index/gcsa/{og}.{identity}.{segment}.gcsa',
-            og=list_of_ogs,
-            identity=[85, 90, 95, 60, 70, 80],
-            segment=[100, 300, 3000]),
-        expand('output/vg/index/dist/{og}.{identity}.{segment}.dist',
+        expand('output/vg/index/pruned/{og}.{identity}.{segment}.pruned.vg',
             og=list_of_ogs,
             identity=[85, 90, 95, 60, 70, 80],
             segment=[100, 300, 3000])
+
 
 rule gfa2vg:
     input:
@@ -308,7 +305,7 @@ rule gfa2vg:
         '> {output} '
         '2> {log}'
 
-# sm1.log
+
 rule vg_index_xg:
     input:
         'output/vg/vg_version/{og}.{identity}.{segment}.vg'
@@ -326,7 +323,7 @@ rule vg_index_xg:
         '{input} '
         '2> {log}'
 
-# sm2.log
+
 rule vg_index_pruned:
     input:
         'output/vg/vg_version/{og}.{identity}.{segment}.vg'
@@ -342,11 +339,12 @@ rule vg_index_pruned:
         'vg prune -r {input} > {output} '
         '2> {log}'
 
+
 rule vg_index_mod:
     input:
         'output/vg/index/pruned/{og}.{identity}.{segment}.pruned.vg'
     output:
-        'output/vg/index/pruned/mod.{og}.{identity}.{segment}.pruned.vg'
+        'output/vg/index/pruned/{og}.{identity}.{segment}.mod.pruned.vg'
     log:
         xg_pruned_log = 'output/logs/vg/xg_pruned_mod_log/vg_index.{og}.{identity}.{segment}.log'
     resources:
@@ -360,8 +358,8 @@ rule vg_index_mod:
 
 rule vg_index_gcsa:
     input:
-        'output/vg/index/pruned/mod.{og}.{identity}.{segment}.pruned.vg' # sm3
-        # 'output/vg/vg_version/{og}.{identity}.{segment}.vg' # sm4
+        'output/vg/index/pruned/{og}.{identity}.{segment}.mod.pruned.vg' 
+        # 'output/vg/vg_version/{og}.{identity}.{segment}.vg' 
     output:
         'output/vg/index/gcsa/{og}.{identity}.{segment}.gcsa'
     log:
@@ -377,30 +375,34 @@ rule vg_index_gcsa:
         '2> {log}'
 
 
-rule vg_index_snarls:
-    input:
-        'output/vg/index/xg/{og}.{identity}.{segment}.xg'
-    output:
-        'output/vg/index/snarls/{og}.{identity}.{segment}.trivial.snarls' # sm5
-    log:
-        'output/logs/vg/snarls_log/vg_index.{og}.{identity}.{segment}.log'
-    resources:
-        time = '0-0:1:00'
-    container: 
-        vg
-    shell:
-        'vg snarls '
-        '-T {input} '
-        '> {output} '
-        '2> {log}'
+#rule vg_index_snarls:
+    #input:
+        #'output/vg/index/xg/{og}.{identity}.{segment}.xg'
+    #output:
+        #'output/vg/index/snarls/{og}.{identity}.{segment}.trivial.snarls' # sm5
+    #log:
+        #'output/logs/vg/snarls_log/vg_index.{og}.{identity}.{segment}.log'
+    #resources:
+        #time = '0-0:1:00'
+    #container: 
+        #vg
+    #shell:
+        #'vg snarls '
+        #'-T {input} '
+        #'> {output} '
+        #'2> {log}'
+# -s 
+# invalid option -- 's' in vg index
+# create the distance index no longer need the snarls files
+
 
 
 rule vg_index_dist:
     input:
-        xg = 'output/vg/index/xg/{og}.{identity}.{segment}.xg',
-        snarl = 'output/vg/index/snarls/{og}.{identity}.{segment}.trivial.snarls'
+        xg = 'output/vg/index/xg/{og}.{identity}.{segment}.xg'
+        # snarl = 'output/vg/index/snarls/{og}.{identity}.{segment}.trivial.snarls'
     output:
-        'output/vg/index/dist/{og}.{identity}.{segment}.dist' # sm6
+        'output/vg/index/dist/{og}.{identity}.{segment}.dist'
     log:
         'output/logs/vg/dist_log/vg_index.{og}.{identity}.{segment}.log'
     resources:
