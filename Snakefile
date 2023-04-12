@@ -281,7 +281,7 @@ def gfa_input(wildcards):
 
 rule vg_test: 
     input:
-        expand('output/vg/index/dist/{og}.{identity}.{segment}.dist',
+        expand('output/vg/index/pruned/mod.{og}.{identity}.{segment}.pruned.vg',
             og=list_of_ogs,
             identity=[85, 90, 95, 60, 70, 80],
             segment=[100, 300, 3000])
@@ -338,11 +338,26 @@ rule vg_index_pruned:
         'vg prune -r {input} > {output} '
         '2> {log}'
 
+rule vg_index_mod:
+    input:
+        'output/vg/index/pruned/{og}.{identity}.{segment}.pruned.vg'
+    output:
+        'output/vg/index/pruned/mod.{og}.{identity}.{segment}.pruned.vg'
+    log:
+        xg_pruned_log = 'output/logs/vg/xg_pruned_mod_log/vg_index.{og}.{identity}.{segment}.log'
+    resources:
+        time = '0-0:1:00'
+    container: 
+        vg
+    shell:
+        'vg mod -X 256 {input} > {output} '
+        '2> {log}'
+
 
 rule vg_index_gcsa:
     input:
-        # 'output/vg/index/pruned/{og}.{identity}.{segment}.pruned.vg' sm3
-        'output/vg/vg_version/{og}.{identity}.{segment}.vg' # sm4
+        'output/vg/index/pruned/mod.{og}.{identity}.{segment}.pruned.vg' # sm3
+        # 'output/vg/vg_version/{og}.{identity}.{segment}.vg' # sm4
     output:
         'output/vg/index/gcsa/{og}.{identity}.{segment}.gcsa'
     log:
