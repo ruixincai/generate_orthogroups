@@ -440,7 +440,7 @@ rule vg:
         'vg mpmap '
         '-x {input.xg} '
         '-g {input.gcsa} '
-        # '-d {input.dist} ' 
+        '-d {input.dist} ' 
         '-n RNA '
         '-f {input.fastq} '
         '> {output} '
