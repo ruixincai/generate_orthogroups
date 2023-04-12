@@ -281,7 +281,11 @@ def gfa_input(wildcards):
 
 rule vg_test: 
     input:
-        expand('output/vg/index/pruned/mod.{og}.{identity}.{segment}.pruned.vg',
+        expand('output/vg/index/gcsa/{og}.{identity}.{segment}.gcsa',
+            og=list_of_ogs,
+            identity=[85, 90, 95, 60, 70, 80],
+            segment=[100, 300, 3000]),
+        expand('output/vg/index/dist/{og}.{identity}.{segment}.dist',
             og=list_of_ogs,
             identity=[85, 90, 95, 60, 70, 80],
             segment=[100, 300, 3000])
@@ -406,7 +410,7 @@ rule vg_index_dist:
     shell:
         'vg index '
         '-x {input.xg} '
-        '-s {input.snarl} '
+        # '-s {input.snarl} '
         '-j {output} '
         '2> {log}'
 
