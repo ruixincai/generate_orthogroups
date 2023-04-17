@@ -281,7 +281,7 @@ def gfa_input(wildcards):
 
 rule vg_test: 
     input:
-        expand('output/vg/vg_result/{og}.{identity}.{segment}.gamp',
+        expand('output/vg/merged_graph.vg',
             og=list_of_ogs,
             identity=[85, 90, 95, 60, 70, 80],
             segment=[100, 300, 3000])
@@ -304,6 +304,25 @@ rule gfa2vg:
         '-v '
         '> {output} '
         '2> {log}'
+
+
+rule merge_vg:
+    input:
+        'output/vg/vg_version/{og}.{identity}.{segment}.vg'
+    output:
+        'output/vg/merged_graph.vg'
+    log:
+        'output/logs/vg/merged_graph.log'
+    resources:
+        time = '0-0:1:00'
+    container: 
+        vg
+    shell:
+        'vg combine '
+        '{input} '
+        '> {output} '
+        '2> {log}'
+
 
 
 rule vg_index_xg:
@@ -375,22 +394,22 @@ rule vg_index_gcsa:
         '2> {log}'
 
 
-#rule vg_index_snarls:
-    #input:
-        #'output/vg/index/xg/{og}.{identity}.{segment}.xg'
-    #output:
-        #'output/vg/index/snarls/{og}.{identity}.{segment}.trivial.snarls' # sm5
-    #log:
-        #'output/logs/vg/snarls_log/vg_index.{og}.{identity}.{segment}.log'
-    #resources:
-        #time = '0-0:1:00'
-    #container: 
-        #vg
-    #shell:
-        #'vg snarls '
-        #'-T {input} '
-        #'> {output} '
-        #'2> {log}'
+# rule vg_index_snarls:
+    # input:
+        # 'output/vg/index/xg/{og}.{identity}.{segment}.xg'
+    # output:
+        # 'output/vg/index/snarls/{og}.{identity}.{segment}.trivial.snarls' # sm5
+    # log:
+        # 'output/logs/vg/snarls_log/vg_index.{og}.{identity}.{segment}.log'
+    # resources:
+        # time = '0-0:1:00'
+    # container: 
+        # vg
+    # shell:
+        # 'vg snarls '
+        # '-T {input} '
+        # '> {output} '
+        # '2> {log}'
 # -s 
 # invalid option -- 's' in vg index
 # create the distance index no longer need the snarls files
