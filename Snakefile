@@ -271,11 +271,9 @@ rule pggb_test:
         # 'output/vg/{og}.{identity}.{segment}'
 
 def gfa_input(wildcards):
-    # pggb_dir = f'output/pggb/{wildcards.og}.{wildcards.identity}.{wildcards.segment}/{{filename}}.gfa'
     checkpoint_output = checkpoints.pggb.get(**wildcards).output['output_dir']
     gfa_file_path = f'{checkpoint_output}/{{filename}}.gfa'
     gfa_file = glob_wildcards(gfa_file_path).filename
-    # gfa_output = str("output/pggb/{wildcards.og}.{wildcards.identity}.{wildcards.segment}/{{filename}}.gfa")
     return(expand(gfa_file_path,filename = gfa_file))
 
 
@@ -308,9 +306,10 @@ rule gfa2vg:
 
 rule merge_vg:
     input:
-        'output/vg/vg_version/{og}.{identity}.{segment}.vg'
+        vg_files = expand('output/vg/vg_version/{og}.{{identity}}.{{segment}}.vg', 
+            og=list_of_ogs)
     output:
-        'output/vg/merged_graph.vg'
+        merged_graph = 'output/vg/merged_graph.vg'
     log:
         'output/logs/vg/merged_graph.log'
     resources:
