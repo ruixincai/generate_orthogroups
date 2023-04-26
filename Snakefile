@@ -279,8 +279,7 @@ def gfa_input(wildcards):
 
 rule vg_test: 
     input:
-        expand('output/vg/merged_graph.vg',
-            og=list_of_ogs,
+        expand('output/vg/merged_graph.{identity}.{segment}.vg',
             identity=[85, 90, 95, 60, 70, 80],
             segment=[100, 300, 3000])
 
@@ -309,9 +308,9 @@ rule merge_vg:
         vg_files = expand('output/vg/vg_version/{og}.{{identity}}.{{segment}}.vg', 
             og=list_of_ogs)
     output:
-        merged_graph = 'output/vg/merged_graph.vg'
+        merged_graph = 'output/vg/merged_graph.{identity}.{segment}.vg'
     log:
-        'output/logs/vg/merged_graph.log'
+        'output/logs/vg/merged_graph.{identity}.{segment}.log'
     resources:
         time = '0-0:1:00'
     container: 
