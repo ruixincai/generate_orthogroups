@@ -487,6 +487,28 @@ rule vg_sim:
         '2> {log}'
 
 
+rule vg_map:
+    input:
+        txt = 'output/vg/vg_sim/{og}.{identity}.{segment}.sim.txt',
+        xg = 'output/vg/index/xg/{og}.{identity}.{segment}.xg',
+        gcsa = 'output/vg/index/gcsa/{og}.{identity}.{segment}.gcsa'
+    output:
+        'output/vg/vg_map/{og}.{identity}.{segment}.gam'
+    log:
+        'output/logs/vg/vg_map/{og}.{identity}.{segment}.log'
+    resources:
+        time = '0-0:1:00'
+    container: 
+        vg
+    shell:
+        'vg map '
+        '-T {input.txt} '
+        '-x {input.xg} '
+        '-g {input.gcsa} '
+        '> {output} '
+        '2> {log}'
+
+
         
 
 rule aggregate:
