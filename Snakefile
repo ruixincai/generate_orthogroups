@@ -279,7 +279,8 @@ def gfa_input(wildcards):
 
 rule vg_test: 
     input:
-        expand('output/vg/merged_graph.{identity}.{segment}.vg',
+        expand('output/vg/vg_sim/{og}.{identity}.{segment}.sim.txt',
+            og=list_of_ogs,
             identity=[85, 90, 95, 60, 70, 80],
             segment=[100, 300, 3000])
 
@@ -462,7 +463,30 @@ rule vg:
         '-f {input.fastq} '
         '> {output} '
         '2> {log}'
-        
+
+
+
+# vg map
+rule vg_sim:
+    input:
+        xg = 'output/vg/index/xg/{og}.{identity}.{segment}.xg'
+    output:
+        'output/vg/vg_sim/{og}.{identity}.{segment}.sim.txt'
+    log:
+        'output/logs/vg/vg_sim/{og}.{identity}.{segment}.log'
+    resources:
+        time = '0-0:1:00'
+    container: 
+        vg
+    shell:
+        'vg sim '
+        '-n 1000 '
+        '-l 150 '
+        '-x {input.xg} '
+        '> {output} '
+        '2> {log}'
+
+
         
 
 rule aggregate:
