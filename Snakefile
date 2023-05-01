@@ -279,7 +279,7 @@ def gfa_input(wildcards):
 
 rule vg_test: 
     input:
-        expand('output/vg/vg_sim/{og}.{identity}.{segment}.sim.txt',
+        expand('output/vg/vg_map/{og}.{identity}.{segment}.gam',
             og=list_of_ogs,
             identity=[85, 90, 95, 60, 70, 80],
             segment=[100, 300, 3000])
