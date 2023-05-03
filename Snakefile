@@ -277,7 +277,7 @@ def gfa_input(wildcards):
 
 rule vg_test: 
     input:
-        expand('output/vg/merged_graph/{identity}.{segment}.merged_graph.vg',
+        expand('output/vg/index/xg/{identity}.{segment}.xg',
             og=list_of_ogs,
             identity=[85, 90, 95, 60, 70, 80],
             segment=[100, 300, 3000])
