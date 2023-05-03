@@ -445,7 +445,7 @@ rule vg_mpmap:
     output:
         'output/vg/vg_mpmap/{identity}.{segment}.gamp'
     log:
-        'output/logs/vg/vg_mpmap/{og}.{identity}.{segment}.log'
+        'output/logs/vg/vg_mpmap/{identity}.{segment}.log'
     resources:
         time = '0-0:1:00'
     container: 
