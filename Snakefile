@@ -279,7 +279,7 @@ def gfa_input(wildcards):
 
 rule vg_test: 
     input:
-        expand('output/vg/vg_map/{og}.{identity}.{segment}.gam',
+        expand('output/vg/vg_format/{og}.{identity}.{segment}.vg',
             og=list_of_ogs,
             identity=[85, 90, 95, 60, 70, 80],
             segment=[100, 300, 3000])
@@ -289,9 +289,9 @@ rule gfa2vg:
     input:
         gfa_input
     output:
-        'output/vg/vg_version/{og}.{identity}.{segment}.vg'
+        'output/vg/vg_format/{og}.{identity}.{segment}.vg'
     log:
-        'output/logs/vg/vg_version.{og}.{identity}.{segment}.log'
+        'output/logs/vg/vg_format/{og}.{identity}.{segment}.log'
     resources:
         time = '0-0:1:00'
     container: 
@@ -306,12 +306,12 @@ rule gfa2vg:
 
 rule merge_vg:
     input:
-        vg_files = expand('output/vg/vg_version/{og}.{{identity}}.{{segment}}.vg', 
+        vg_files = expand('output/vg/vg_format/{og}.{{identity}}.{{segment}}.vg', 
             og=list_of_ogs)
     output:
-        merged_graph = 'output/vg/merged_graph.{identity}.{segment}.vg'
+        merged_graph = 'output/vg/merged_graph/{identity}.{segment}.merged_graph.vg'
     log:
-        'output/logs/vg/merged_graph.{identity}.{segment}.log'
+        'output/logs/vg/merged_graph/{identity}.{segment}.merged_graph.log'
     resources:
         time = '0-0:1:00'
     container: 
@@ -326,11 +326,11 @@ rule merge_vg:
 
 rule vg_index_xg:
     input:
-        'output/vg/vg_version/{og}.{identity}.{segment}.vg'
+        'output/vg/merged_graph/{identity}.{segment}.merged_graph.vg'
     output:
-        'output/vg/index/xg/{og}.{identity}.{segment}.xg'
+        'output/vg/index/xg/{identity}.{segment}.xg'
     log:
-        'output/logs/vg/xg_log/vg_index.{og}.{identity}.{segment}.log'
+        'output/logs/vg/xg_log/{identity}.{segment}.log'
     resources:
         time = '0-0:1:00'
     container: 
@@ -344,11 +344,11 @@ rule vg_index_xg:
 
 rule vg_index_pruned:
     input:
-        'output/vg/vg_version/{og}.{identity}.{segment}.vg'
+        'output/vg/merged_graph/{identity}.{segment}.merged_graph.vg'
     output:
-        'output/vg/index/pruned/{og}.{identity}.{segment}.pruned.vg'
+        'output/vg/index/pruned/{identity}.{segment}.pruned.vg'
     log:
-        'output/logs/vg/xg_pruned_log/vg_index.{og}.{identity}.{segment}.log'
+        'output/logs/vg/pruned_log/{identity}.{segment}.log'
     resources:
         time = '0-0:1:00'
     container: 
@@ -358,13 +358,13 @@ rule vg_index_pruned:
         '2> {log}'
 
 
-rule vg_index_mod:
+rule vg_index_mod_pruned:
     input:
-        'output/vg/index/pruned/{og}.{identity}.{segment}.pruned.vg'
+        'output/vg/index/pruned/{identity}.{segment}.pruned.vg'
     output:
-        'output/vg/index/pruned/{og}.{identity}.{segment}.mod.pruned.vg'
+        'output/vg/index/mod_pruned/{identity}.{segment}.mod.pruned.vg'
     log:
-        'output/logs/vg/xg_pruned_mod_log/vg_index.{og}.{identity}.{segment}.log'
+        'output/logs/vg/mod_pruned_log/{identity}.{segment}.log'
     resources:
         time = '0-0:1:00'
     container: 
@@ -376,12 +376,11 @@ rule vg_index_mod:
 
 rule vg_index_gcsa:
     input:
-        'output/vg/index/pruned/{og}.{identity}.{segment}.mod.pruned.vg' 
-        # 'output/vg/vg_version/{og}.{identity}.{segment}.vg' 
+        'output/vg/index/mod_pruned/{identity}.{segment}.mod.pruned.vg'
     output:
-        'output/vg/index/gcsa/{og}.{identity}.{segment}.gcsa'
+        'output/vg/index/gcsa/{identity}.{segment}.gcsa'
     log:
-        'output/logs/vg/gcsa_log/vg_index.{og}.{identity}.{segment}.log'
+        'output/logs/vg/gcsa_log/{og}.{identity}.{segment}.log'
     resources:
         time = '0-0:1:00'
     container: 
@@ -414,15 +413,14 @@ rule vg_index_gcsa:
 # create the distance index no longer need the snarls files
 
 
-
 rule vg_index_dist:
     input:
-        xg = 'output/vg/index/xg/{og}.{identity}.{segment}.xg'
+        xg = 'output/vg/index/xg/{identity}.{segment}.xg'
         # snarl = 'output/vg/index/snarls/{og}.{identity}.{segment}.trivial.snarls'
     output:
-        'output/vg/index/dist/{og}.{identity}.{segment}.dist'
+        'output/vg/index/dist/{identity}.{segment}.dist'
     log:
-        'output/logs/vg/dist_log/vg_index.{og}.{identity}.{segment}.log'
+        'output/logs/vg/dist_log/{identity}.{segment}.log'
     resources:
         time = '0-0:1:00'
     container: 
@@ -440,16 +438,16 @@ rule vg_index_dist:
     #gfa_file_path = 'output/pggb/{wildcards.og}.{wildcards.identity}.{wildcards.segment}/{{filename}}.gfa'
     #return(gfa_file)
 
-rule vg:
+rule vg_mpmap:
     input:
-        xg = 'output/vg/index/xg/{og}.{identity}.{segment}.xg',
-        gcsa = 'output/vg/index/gcsa/{og}.{identity}.{segment}.gcsa',
-        dist = 'output/vg/index/dist/{og}.{identity}.{segment}.dist',
+        xg = 'output/vg/index/xg/{identity}.{segment}.xg',
+        gcsa = 'output/vg/index/gcsa/{identity}.{segment}.gcsa',
+        dist = 'output/vg/index/dist/{identity}.{segment}.dist',
         fastq = 'data/RNA_seq/SRR520427.fq'
     output:
-        'output/vg/vg_result/{og}.{identity}.{segment}.gamp'
+        'output/vg/vg_mpmap/{identity}.{segment}.gamp'
     log:
-        'output/logs/vg/vg_result/{og}.{identity}.{segment}.log'
+        'output/logs/vg/vg_mpmap/{og}.{identity}.{segment}.log'
     resources:
         time = '0-0:1:00'
     container: 
@@ -487,6 +485,7 @@ rule vg_sim:
         '2> {log}'
 
 
+# sm.log
 rule vg_map:
     input:
         txt = 'output/vg/vg_sim/{og}.{identity}.{segment}.sim.txt',
@@ -507,6 +506,10 @@ rule vg_map:
         '-g {input.gcsa} '
         '> {output} '
         '2> {log}'
+
+
+rule vg_gbz:
+
 
 
         
