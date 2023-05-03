@@ -277,7 +277,7 @@ def gfa_input(wildcards):
 
 rule vg_test: 
     input:
-        expand('output/vg/vg_mpmap/{identity}.{segment}.gamp',
+        expand('output/vg/vg_sim/{identity}.{segment}.sim.txt',
             identity=[85, 90, 95, 60, 70, 80],
             segment=[100, 300, 3000])
 
@@ -464,11 +464,11 @@ rule vg_mpmap:
 # vg map
 rule vg_sim:
     input:
-        xg = 'output/vg/index/xg/{og}.{identity}.{segment}.xg'
+        xg = 'output/vg/index/xg/{identity}.{segment}.xg'
     output:
-        'output/vg/vg_sim/{og}.{identity}.{segment}.sim.txt'
+        'output/vg/vg_sim/{identity}.{segment}.sim.txt'
     log:
-        'output/logs/vg/vg_sim/{og}.{identity}.{segment}.log'
+        'output/logs/vg/vg_sim/{identity}.{segment}.log'
     resources:
         time = '0-0:1:00'
     container: 
@@ -485,13 +485,13 @@ rule vg_sim:
 # sm.log
 rule vg_map:
     input:
-        txt = 'output/vg/vg_sim/{og}.{identity}.{segment}.sim.txt',
-        xg = 'output/vg/index/xg/{og}.{identity}.{segment}.xg',
-        gcsa = 'output/vg/index/gcsa/{og}.{identity}.{segment}.gcsa'
+        txt = 'output/vg/vg_sim/{identity}.{segment}.sim.txt',
+        xg = 'output/vg/index/xg/{identity}.{segment}.xg',
+        gcsa = 'output/vg/index/gcsa/{identity}.{segment}.gcsa'
     output:
-        'output/vg/vg_map/{og}.{identity}.{segment}.gam'
+        'output/vg/vg_map/{identity}.{segment}.gam'
     log:
-        'output/logs/vg/vg_map/{og}.{identity}.{segment}.log'
+        'output/logs/vg/vg_map/{identity}.{segment}.log'
     resources:
         time = '0-0:1:00'
     container: 
