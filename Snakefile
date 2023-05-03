@@ -277,7 +277,7 @@ def gfa_input(wildcards):
 
 rule vg_test: 
     input:
-        expand('output/vg/index/mod_pruned/{identity}.{segment}.mod.pruned.vg',
+        expand('output/vg/index/gcsa/{identity}.{segment}.gcsa',
             identity=[85, 90, 95, 60, 70, 80],
             segment=[100, 300, 3000])
 
