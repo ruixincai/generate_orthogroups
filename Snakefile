@@ -378,7 +378,7 @@ rule vg_index_gcsa:
     output:
         'output/vg/index/gcsa/{identity}.{segment}.gcsa'
     log:
-        'output/logs/vg/gcsa_log/{og}.{identity}.{segment}.log'
+        'output/logs/vg/gcsa_log/{identity}.{segment}.log'
     resources:
         time = '0-0:1:00'
     container: 
