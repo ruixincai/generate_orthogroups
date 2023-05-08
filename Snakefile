@@ -277,7 +277,7 @@ def gfa_input(wildcards):
 
 rule vg_test: 
     input:
-        expand('output/vg/vg_map/{identity}.{segment}.gam',
+        expand('output/vg/vg_mpmap/{identity}.{segment}.gamp',
             identity=[85, 90, 95, 60, 70, 80],
             segment=[100, 300, 3000])
 
@@ -446,7 +446,7 @@ rule vg_mpmap:
     log:
         'output/logs/vg/vg_mpmap/{identity}.{segment}.log'
     resources:
-        time = '0-0:1:00'
+        time = '0-0:10:00'
     container: 
         vg
     shell:
