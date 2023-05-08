@@ -277,7 +277,7 @@ def gfa_input(wildcards):
 
 rule vg_test: 
     input:
-        expand('output/vg/vg_map/{identity}.{segment}.gam',
+        expand('output/vg/merged_graph_gfa/{identity}.{segment}.merged_graph.gfa',
             identity=[85, 90, 95, 60, 70, 80],
             segment=[100, 300, 3000])
 
@@ -480,6 +480,22 @@ rule vg_sim:
         '-x {input.xg} '
         '> {output} '
         '2> {log}'
+
+
+rule vg_vg2gfa:
+    input:
+        merged_graph = 'output/vg/merged_graph/{identity}.{segment}.merged_graph.vg'
+    output:
+        'output/vg/merged_graph_gfa/{identity}.{segment}.merged_graph.gfa'
+    log:
+        'output/logs/vg/merged_graph_gfa/{identity}.{segment}.merged_graph.log'
+    resources:
+        time = '0-0:5:00'
+    container: 
+        vg
+    shell:
+        'vg view '
+        '{input.merged_graph} > {output}'
 
 
 # sm.log
