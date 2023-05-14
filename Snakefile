@@ -277,7 +277,7 @@ def gfa_input(wildcards):
 
 rule vg_test: 
     input:
-        expand('output/vg/merged_graph_gfa/{identity}.{segment}.merged_graph.gfa',
+        expand(multiext('output/vg/autoindex/{identity}.{segment}.merged_graph', '.xg', '.gcsa', '.gcsa.lcp'),
             identity=[85, 90, 95, 60, 70, 80],
             segment=[100, 300, 3000])
 
@@ -495,7 +495,30 @@ rule vg_vg2gfa:
         vg
     shell:
         'vg view '
-        '{input.merged_graph} > {output}'
+        '{input.merged_graph} > {output} '
+        '2> {log}'
+
+
+rule vg_autoindex:
+    input:
+        'output/vg/merged_graph_gfa/{identity}.{segment}.merged_graph.gfa'
+    output:
+        multiext('output/vg/autoindex/{identity}.{segment}.merged_graph', '.xg', '.gcsa', '.gcsa.lcp')
+    params:
+        prefix='output/vg/autoindex/{identity}.{segment}.merged_graph',
+        workflow='map'
+    log:
+        'output/logs/vg/vg_autoindex.log'
+    resources:
+        time = '0-0:5:00'
+    container: 
+        vg
+    shell:
+        'vg autoindex '
+        '--workflow {params.workflow} '
+        '--prefix {params.prefix} '
+        '--gfa {input} '
+        '2> {log}'
 
 
 # sm.log
