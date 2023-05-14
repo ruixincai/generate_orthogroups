@@ -506,7 +506,7 @@ rule vg_autoindex:
         multiext('output/vg/autoindex/{identity}.{segment}.merged_graph', '.xg', '.gcsa', '.gcsa.lcp')
     params:
         prefix = 'output/vg/autoindex/{identity}.{segment}.merged_graph',
-        workflow = 'map'
+        workflow ='map'
     log:
         'output/logs/vg/vg_autoindex.log'
     resources:
@@ -536,7 +536,7 @@ rule vg_map:
         vg
     shell:
         'vg map '
-        '-d {input.rules.vg_autoindex.output} '
+        '-d output/vg/autoindex/{identity}.{segment}.merged_graph '
         '-f {input.fastq} '
         '--interleaved '
         '> {output} '
