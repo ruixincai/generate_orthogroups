@@ -277,7 +277,7 @@ def gfa_input(wildcards):
 
 rule vg_test: 
     input:
-        expand(multiext('output/vg/autoindex/{identity}.{segment}.merged_graph', '.xg', '.gcsa', '.gcsa.lcp'),
+        expand('output/vg/vg_map/{identity}.{segment}.map.gam',
             identity=[85, 90, 95, 60, 70, 80],
             segment=[100, 300, 3000])
 
@@ -524,22 +524,21 @@ rule vg_autoindex:
 # sm.log
 rule vg_map:
     input:
-        txt = 'output/vg/vg_sim/{identity}.{segment}.sim.txt',
-        xg = 'output/vg/index/xg/{identity}.{segment}.xg',
-        gcsa = 'output/vg/index/gcsa/{identity}.{segment}.gcsa'
+        rules.vg_autoindex.output,
+        fastq = 'data/RNA_seq/SRR520427.fq'
     output:
-        'output/vg/vg_map/{identity}.{segment}.gam'
+        'output/vg/vg_map/{identity}.{segment}.map.gam'
     log:
         'output/logs/vg/vg_map/{identity}.{segment}.log'
     resources:
-        time = '0-0:10:00'
+        time = '0-0:5:00'
     container: 
         vg
     shell:
         'vg map '
-        '-T {input.txt} '
-        '-x {input.xg} '
-        '-g {input.gcsa} '
+        '-d output/vg/autoindex/{identity}.{segment}.merged_graph '
+        '-f {input.fastq} '
+        '--interleaved '
         '> {output} '
         '2> {log}'
 
