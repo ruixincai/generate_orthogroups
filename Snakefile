@@ -508,7 +508,7 @@ rule vg_autoindex:
         prefix = 'output/vg/autoindex/{identity}.{segment}.merged_graph',
         workflow ='map'
     log:
-        'output/logs/vg/{identity}.{segment}.vg_autoindex.log'
+        'output/logs/vg/autoindex/{identity}.{segment}.vg_autoindex.log'
     resources:
         time = '0-0:5:00'
     container: 
@@ -524,7 +524,7 @@ rule vg_autoindex:
 # sm.log
 rule vg_map:
     input:
-        index = multiext('output/vg/autoindex/{identity}.{segment}.merged_graph', '.xg', '.gcsa', '.gcsa.lcp'),
+        index = multiext('output/vg/autoindex/{identity}.{segment}.merged_graph'),
         fastq = 'data/RNA_seq/SRR520427.fq'
     output:
         'output/vg/vg_map/{identity}.{segment}.map.gam'
