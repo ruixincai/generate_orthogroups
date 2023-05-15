@@ -536,7 +536,7 @@ rule vg_map:
         vg
     shell:
         'vg map '
-        '-d merged_graph '
+        '-d {identity}.{segment}.merged_graph '
         '-f {input.fastq} '
         '--interleaved '
         '> {output} '
