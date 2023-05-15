@@ -536,7 +536,7 @@ rule vg_map:
         vg
     shell:
         'vg map '
-        '-d output/vg/autoindex/{identity}.{segment}.merged_graph '
+        '-d merged_graph '
         '-f {input.fastq} '
         '--interleaved '
         '> {output} '
