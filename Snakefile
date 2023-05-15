@@ -277,7 +277,7 @@ def gfa_input(wildcards):
 
 rule vg_test: 
     input:
-        expand('output/vg/vg_mpmap/{identity}.{segment}.gamp',
+        expand('output/vg/vg_map/{identity}.{segment}.map.gam',
             identity=[85, 90, 95, 60, 70, 80],
             segment=[100, 300, 3000])
 
