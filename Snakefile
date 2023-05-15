@@ -277,7 +277,7 @@ def gfa_input(wildcards):
 
 rule vg_test: 
     input:
-        expand('output/vg/vg_map/{identity}.{segment}.map.gam',
+        expand('output/vg/vg_mpmap/{identity}.{segment}.gamp',
             identity=[85, 90, 95, 60, 70, 80],
             segment=[100, 300, 3000])
 
@@ -437,9 +437,9 @@ rule vg_index_dist:
 
 rule vg_mpmap:
     input:
-        xg = 'output/vg/index/xg/{identity}.{segment}.xg',
-        gcsa = 'output/vg/index/gcsa/{identity}.{segment}.gcsa',
-        dist = 'output/vg/index/dist/{identity}.{segment}.dist',
+        xg = 'output/vg/autoindex/{identity}.{segment}.merged_graph.xg',
+        gcsa = 'output/vg/autoindex/{identity}.{segment}.merged_graph.gcsa',
+        dist = 'output/vg/autoindex/{identity}.{segment}.merged_graph.dist',
         fastq = 'data/RNA_seq/SRR520427.fq'
     output:
         'output/vg/vg_mpmap/{identity}.{segment}.gamp'
