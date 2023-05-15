@@ -524,7 +524,7 @@ rule vg_autoindex:
 # sm.log
 rule vg_map:
     input:
-        rules.vg_autoindex.output,
+        index = multiext('output/vg/autoindex/{identity}.{segment}.merged_graph', '.xg', '.gcsa', '.gcsa.lcp'),
         fastq = 'data/RNA_seq/SRR520427.fq'
     output:
         'output/vg/vg_map/{identity}.{segment}.map.gam'
@@ -536,7 +536,7 @@ rule vg_map:
         vg
     shell:
         'vg map '
-        '-d {input.rules.vg_autoindex.output} '
+        '-d {input.index} '
         '-f {input.fastq} '
         '--interleaved '
         '> {output} '
