@@ -508,7 +508,7 @@ rule vg_autoindex:
         prefix = 'output/vg/autoindex/{identity}.{segment}.merged_graph',
         workflow ='map'
     log:
-        'output/logs/vg/vg_autoindex.log'
+        'output/logs/vg/{identity}.{segment}.vg_autoindex.log'
     resources:
         time = '0-0:5:00'
     container: 
@@ -529,7 +529,7 @@ rule vg_map:
     output:
         'output/vg/vg_map/{identity}.{segment}.map.gam'
     log:
-        'output/logs/vg/vg_map/{identity}.{segment}.log'
+        'output/logs/vg/vg_map/{identity}.{segment}.vg_map.log'
     resources:
         time = '0-0:5:00'
     container: 
