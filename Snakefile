@@ -536,15 +536,11 @@ rule vg_map:
         vg
     shell:
         'vg map '
-        '-d {input.index} '
+        '-d output/vg/autoindex/{identity}.{segment}.merged_graph '
         '-f {input.fastq} '
         '--interleaved '
         '> {output} '
         '2> {log}'
-
-
-rule vg_gbz:
-
 
 
         
