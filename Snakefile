@@ -524,10 +524,12 @@ rule vg_autoindex:
 # sm.log
 rule vg_map:
     input:
-        index = multiext('output/vg/autoindex/{identity}.{segment}.merged_graph'),
+        rules.vg_autoindex.output,
         fastq = 'data/RNA_seq/SRR520427.fq'
     output:
         'output/vg/vg_map/{identity}.{segment}.map.gam'
+    params:
+        prefix = 'output/vg/autoindex/{identity}.{segment}.merged_graph'
     log:
         'output/logs/vg/vg_map/{identity}.{segment}.vg_map.log'
     resources:
@@ -536,7 +538,7 @@ rule vg_map:
         vg
     shell:
         'vg map '
-        '-d {identity}.{segment}.merged_graph '
+        '-d {params.prefix} '
         '-f {input.fastq} '
         '--interleaved '
         '> {output} '
