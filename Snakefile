@@ -532,12 +532,16 @@ rule vg_map:
         prefix = 'output/vg/autoindex/{identity}.{segment}.merged_graph'
     log:
         'output/logs/vg/vg_map/{identity}.{segment}.vg_map.log'
-    resources:
-        time = '0-0:5:00'
+    threads:    
+        lambda wildcards, attempt: 10 * attempt
+    resources:  
+        time = lambda wildcards, attempt: 10 * attempt
     container: 
         vg
     shell:
         'vg map '
+        '-t {threads} '
+        '--log-time '
         '-d {params.prefix} '
         '-f {input.fastq} '
         '--interleaved '
