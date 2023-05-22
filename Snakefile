@@ -277,9 +277,27 @@ def gfa_input(wildcards):
 
 rule vg_test: 
     input:
-        expand('output/vg/vg_map/{identity}.{segment}.map.gam',
+        expand(directory('output/matrix/{og}.{identity}.{segment}'),
             identity=[85, 90, 95, 60, 70, 80],
             segment=[100, 300, 3000])
+
+rule vg_stat:
+    input:
+        gfa_input
+    output:
+        directory('output/matrix/{og}.{identity}.{segment}')
+    log:
+        'output/logs/matrix/{og}.{identity}.{segment}.log'
+    resources:
+        time = '0-0:1:00'
+    container: 
+        vg
+    shell:
+        'vg stats '
+        '-v '
+        '{input} '
+        '> {output} '
+        '2> {log}'
 
 
 rule gfa2vg:
