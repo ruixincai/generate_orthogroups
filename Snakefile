@@ -41,6 +41,9 @@ ref_transcripts = {
         'GCF_016801865.1_TS_Cpip_V1_rna.fna')
 }
 
+
+
+
 # leave this as the first rule
 rule target:
     input:
@@ -51,7 +54,6 @@ rule target:
         'output/ortho_match.csv',
         'output/separated_orthogroups',
         "data/transcripts/combined_transcripts.fa"
-
 
 
 # Run the OrthoFinder on the reference protein sequences of three mosquito species in FASTA format
@@ -103,8 +105,8 @@ rule separated_transcript_protein_tables:
 
 
 # 3 CSV files generated before was combined into a single table database
-# a combined tabular database include all transcript accession numbers, protein accession numbers for 
-# 3 mosquito species is generated
+# a combined tabular database include all transcript accession numbers, protein accession numbers,  
+# mosquito species is generated
 rule combined_transcript_protein_table:
     input:
         input_files = expand('output/separated_transcript_protein_tables/{species}.csv', 
@@ -142,7 +144,7 @@ rule ortho_match:
         'src/ortho_match.R'
 
 
-# an number of file is created in a defined directory
+# TXT files including transcript IDs for orthogroups
 checkpoint separated_orthogroups:
     input:
         input_file = 'output/ortho_match.csv'
@@ -181,7 +183,9 @@ rule transcripts_merge:
     shell:
         "cat {input} > {output}"
 
+
 # the checkpoint that shall trigger re-evaluation of the DAG
+# transcript sequences match to transcript IDs
 rule og_seq:
     input:
         og_txt = "output/separated_orthogroups/{og}.txt",
@@ -205,6 +209,8 @@ rule og_seq:
 
 
 
+
+# pggb index
 rule pggb_index:
     input:
         og_seq_fa = 'output/og_seq/{og}.fa'
@@ -223,7 +229,7 @@ rule pggb_index:
         'samtools faidx {output.og_seq_index} &>> {log}'
 
 
-# pggb: Construct graphs for each orthogroup from transcript sequences of three mosquito species
+# construct graphs for each orthogroup from transcript sequences
 checkpoint pggb:
     input:
         og_seq_index = 'output/og_seq/{og}.fa.gz',
@@ -254,20 +260,22 @@ checkpoint pggb:
         # '-k '
         '&>{log}'
 
-# target orthogroups
+
+# 10 target orthogroups
 list_of_ogs = ['OG0012812','OG0009228','OG0007096','OG0009197','OG0010256','OG0012242','OG0004074','OG0000133', 'OG0008785','OG0001722']
 
+
+# test pggb on 10 orthogroups with different identity and segment length
 rule pggb_test:
     input:
         expand('output/pggb/{og}.{identity}.{segment}',
             og=list_of_ogs,
             identity=[85, 90, 95, 60, 70, 80],
-            segment=[100, 300, 3000]) # minimum segment length is required to be >= 100 bp
+            segment=[100, 300, 3000])  # minimum segment length is required to be >= 100 bp
 
 
-
-
-
+# get GFA graphs from pggb
+# 10 * 6 * 3 = 180 GFA graphs
 def gfa_input(wildcards):
     checkpoint_output = checkpoints.pggb.get(**wildcards).output['output_dir']
     gfa_file_path = f'{checkpoint_output}/{{filename}}.gfa'
@@ -275,13 +283,17 @@ def gfa_input(wildcards):
     return(expand(gfa_file_path,filename = gfa_file))
 
 
+
+
+# test vg on 10 orthogroups with different identity and segment length
 rule vg_test: 
     input:
-        expand('output/matrix/{og}.{identity}.{segment}.txt',
-            og=list_of_ogs,
+        expand('output/vg/vg_surject/{identity}.{segment}.map.bam',
             identity=[85, 90, 95, 60, 70, 80],
             segment=[100, 300, 3000])
 
+
+# analysis of GFA graphs
 rule vg_stat:
     input:
         gfa_input
@@ -295,15 +307,16 @@ rule vg_stat:
         vg
     shell:
         'vg stats '
-        '-z '
-        '-N '
-        '-E '
-        '-s '
+        '-z '  # size of graph
+        '-N '  # number of nodes in graph
+        '-E '  # number of edges in graph
+        '-s '  # describe subgraphs of graph
         '{input} '
         '> {output} '
         '2> {log}'
 
 
+# convert GFA files to vg files
 rule gfa2vg:
     input:
         gfa_input
@@ -323,6 +336,9 @@ rule gfa2vg:
         '2> {log}'
 
 
+# merge vg files of 10 orthogroups into a single vg file 
+# with different identity and segment length
+# 6 * 3 = 18 merged graphs
 rule merge_vg:
     input:
         vg_files = expand('output/vg/vg_format/{og}.{{identity}}.{{segment}}.vg', 
@@ -504,6 +520,7 @@ rule vg_sim:
         '2> {log}'
 
 
+# convert merged graphs to merged GFA graphs
 rule vg_vg2gfa:
     input:
         merged_graph = 'output/vg/merged_graph/{identity}.{segment}.merged_graph.vg'
@@ -521,6 +538,7 @@ rule vg_vg2gfa:
         '2> {log}'
 
 
+# index merged GFA graphs
 rule vg_autoindex:
     input:
         'output/vg/merged_graph_gfa/{identity}.{segment}.merged_graph.gfa'
@@ -543,7 +561,7 @@ rule vg_autoindex:
         '2> {log}'
 
 
-# sm.log
+# vg map
 rule vg_map:
     input:
         rules.vg_autoindex.output,
@@ -570,6 +588,26 @@ rule vg_map:
         '> {output} '
         '2> {log}'
 
+
+# convert gam files to bam files
+rule vg_surject:
+    input:
+        xg = 'output/vg/autoindex/{identity}.{segment}.merged_graph.xg',
+        gam = 'output/vg/vg_map/{identity}.{segment}.map.gam'
+    output:
+        'output/vg/vg_surject/{identity}.{segment}.map.bam'
+    log:
+        'output/logs/vg/vg_surject/{identity}.{segment}.vg_surject.log'
+    resources:
+        time = '0-0:5:00'
+    container: 
+        vg
+    shell:
+        'vg surject '
+        '-x {input.xg} '
+        '-b {input.gam} '
+        '> {output} '
+        '2> {log}'
 
         
 
