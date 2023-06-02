@@ -288,7 +288,7 @@ def gfa_input(wildcards):
 # test vg on 10 orthogroups with different identity and segment length
 rule vg_test: 
     input:
-        expand('output/vg/vg_surject/{identity}.{segment}.map.bam',
+        expand('output/matrix_merged/{identity}.{segment}.txt',
             identity=[85, 90, 95, 60, 70, 80],
             segment=[100, 300, 3000])
 
@@ -538,6 +538,28 @@ rule vg_vg2gfa:
         '2> {log}'
 
 
+# analysis of merged GFA graphs
+rule vg_stat_merged:
+    input:
+        'output/vg/merged_graph_gfa/{identity}.{segment}.merged_graph.gfa'
+    output:
+        'output/matrix_merged/{identity}.{segment}.txt'
+    log:
+        'output/logs/matrix_merged/{identity}.{segment}.log'
+    resources:
+        time = '0-0:1:00'
+    container: 
+        vg
+    shell:
+        'vg stats '
+        '-N '  # number of nodes in graph
+        '-E '  # number of edges in graph
+        '-s '  # describe subgraphs of graph
+        '{input} '
+        '> {output} '
+        '2> {log}'
+
+
 # index merged GFA graphs
 rule vg_autoindex:
     input:
@@ -598,8 +620,10 @@ rule vg_surject:
         'output/vg/vg_surject/{identity}.{segment}.map.bam'
     log:
         'output/logs/vg/vg_surject/{identity}.{segment}.vg_surject.log'
-    resources:
-        time = '0-0:5:00'
+    threads:    
+        lambda wildcards, attempt: 10 * attempt
+    resources:  
+        time = lambda wildcards, attempt: 10 * attempt
     container: 
         vg
     shell:
