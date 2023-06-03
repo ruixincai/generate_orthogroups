@@ -645,11 +645,11 @@ rule rpvg:
     output:
         'output/rpvg/{identity}.{segment}.txt'
     log:
-        'output/logs/vg/gbwt/{identity}.{segment}.gbwt.log'
+        'output/logs/rpvg/{identity}.{segment}.rpvg.log'
     resources:
         time = '0-0:5:00'
     container: 
-        vg
+        rpvg
     shell:
         'rpvg '
         '-g {input.xg} '
