@@ -616,7 +616,8 @@ rule vg_map:
 # gbwt index
 rule vg_gbwt:
     input:
-        xg = 'output/vg/autoindex/{identity}.{segment}.merged_graph.xg'
+        xg = 'output/vg/autoindex/{identity}.{segment}.merged_graph.xg',
+        gfa = 'output/vg/merged_graph_gfa/{identity}.{segment}.merged_graph.gfa'
     output:
         'output/vg/gbwt/{identity}.{segment}.gbwt'
     log:
@@ -628,6 +629,7 @@ rule vg_gbwt:
     shell:
         'vg gbwt '
         '-x {input.xg} '
+        '-G {input.gfa} '
         '-o {output} '
         '2> {log}'
 
