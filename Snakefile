@@ -628,7 +628,6 @@ rule vg_gbwt:
         vg
     shell:
         'vg gbwt '
-        '-x {input.xg} '
         '-G {input.gfa} '
         '-o {output} '
         '2> {log}'
