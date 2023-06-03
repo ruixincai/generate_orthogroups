@@ -640,7 +640,7 @@ rule rpvg:
     input:
         xg = 'output/vg/autoindex/{identity}.{segment}.merged_graph.xg',
         gbwt = 'output/vg/gbwt/{identity}.{segment}.gbwt',
-        gam = 'output/vg/vg_map/{identity}.{segment}.map.gam'
+        gam = 'output/vg/vg_map/{identity}.{segment}.map.gam',
         gfa = 'output/vg/merged_graph_gfa/{identity}.{segment}.merged_graph.gfa'
     output:
         'output/rpvg/{identity}.{segment}.txt'
