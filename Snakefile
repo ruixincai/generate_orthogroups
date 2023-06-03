@@ -641,7 +641,7 @@ rule rpvg:
         xg = 'output/vg/autoindex/{identity}.{segment}.merged_graph.xg',
         gbwt = 'output/vg/gbwt/{identity}.{segment}.gbwt',
         gam = 'output/vg/vg_map/{identity}.{segment}.map.gam',
-        gfa = 'output/vg/merged_graph_gfa/{identity}.{segment}.merged_graph.gfa'
+        merged = 'output/vg/merged_graph/{identity}.{segment}.merged_graph.vg'
     output:
         'output/rpvg/{identity}.{segment}.txt'
     log:
@@ -655,7 +655,7 @@ rule rpvg:
         '-g {input.xg} '
         '-p {input.gbwt} '
         '-a {input.gam} '
-        '-i {input.gfa} '
+        '-i {input.merged} '
         '-o {output} '
         '2> {log}'
 
