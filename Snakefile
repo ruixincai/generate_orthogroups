@@ -290,7 +290,7 @@ def gfa_input(wildcards):
 # test vg on 10 orthogroups with different identity and segment length
 rule vg_test: 
     input:
-        expand('output/vg/gbwt/{identity}.{segment}.gbwt',
+        expand('output/rpvg/{identity}.{segment}.txt',
             identity=[85, 90, 95, 60, 70, 80],
             segment=[100, 300, 3000])
 
@@ -631,6 +631,35 @@ rule vg_gbwt:
         '-G {input.gfa} '
         '-o {output} '
         '2> {log}'
+
+
+
+
+# infers path posterior probabilities and abundances from variation graph read alignments
+rule rpvg:
+    input:
+        xg = 'output/vg/autoindex/{identity}.{segment}.merged_graph.xg',
+        gbwt = 'output/vg/gbwt/{identity}.{segment}.gbwt',
+        gam = 'output/vg/vg_map/{identity}.{segment}.map.gam'
+        gfa = 'output/vg/merged_graph_gfa/{identity}.{segment}.merged_graph.gfa'
+    output:
+        'output/rpvg/{identity}.{segment}.txt'
+    log:
+        'output/logs/vg/gbwt/{identity}.{segment}.gbwt.log'
+    resources:
+        time = '0-0:5:00'
+    container: 
+        vg
+    shell:
+        'rpvg '
+        '-g {input.xg} '
+        '-p {input.gbwt} '
+        '-a {input.gam} '
+        '-i {input.gfa} '
+        '-o {output} '
+        '2> {log}'
+
+
 
 
 # convert gam files to bam files
