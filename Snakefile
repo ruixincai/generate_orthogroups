@@ -10,6 +10,8 @@ pggb = 'docker://ghcr.io/pangenome/pggb:20230113201558a9a04c'
 
 vg = 'docker://quay.io/vgteam/vg:v1.47.0'
 
+rpvg = 'docker://quay.io/jonassibbesen/rpvg'
+
 ref_proteomes = {
     'aalb': Path(proteomes_directory,
                  'GCF_006496715.1_Aalbo_primary.1_protein.faa'),
@@ -288,7 +290,7 @@ def gfa_input(wildcards):
 # test vg on 10 orthogroups with different identity and segment length
 rule vg_test: 
     input:
-        expand('output/matrix_merged/{identity}.{segment}.txt',
+        expand('output/vg/gbwt/{identity}.{segment}.gbwt',
             identity=[85, 90, 95, 60, 70, 80],
             segment=[100, 300, 3000])
 
@@ -608,6 +610,25 @@ rule vg_map:
         '-f {input.fastq} '
         '--interleaved '
         '> {output} '
+        '2> {log}'
+
+
+# gbwt index
+rule vg_gbwt:
+    input:
+        xg = 'output/vg/autoindex/{identity}.{segment}.merged_graph.xg'
+    output:
+        'output/vg/gbwt/{identity}.{segment}.gbwt'
+    log:
+        'output/logs/vg/gbwt/{identity}.{segment}.gbwt.log'
+    resources:
+        time = '0-0:5:00'
+    container: 
+        vg
+    shell:
+        'vg gbwt '
+        '-x {input.xg} '
+        '-o {output} '
         '2> {log}'
 
 
