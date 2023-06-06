@@ -290,7 +290,7 @@ def gfa_input(wildcards):
 # test vg on 10 orthogroups with different identity and segment length
 rule vg_test: 
     input:
-        expand('output/rpvg/{identity}.{segment}.txt',
+        expand('output/matrix_gam/{identity}.{segment}.txt',
             identity=[85, 90, 95, 60, 70, 80],
             segment=[100, 300, 3000])
 
@@ -633,6 +633,24 @@ rule vg_gbwt:
         '2> {log}'
 
 
+# analysis of gam graphs
+rule vg_stat_gam:
+    input:
+        'output/vg/vg_map/{identity}.{segment}.map.gam'
+    output:
+        'output/matrix_gam/{identity}.{segment}.txt'
+    log:
+        'output/logs/matrix_gam/{identity}.{segment}.log'
+    resources:
+        time = '0-0:5:00'
+    container: 
+        vg
+    shell:
+        'vg stats '
+        '-a '  # number of nodes in graph
+        '{input} '
+        '> {output} '
+        '2> {log}'
 
 
 # infers path posterior probabilities and abundances from variation graph read alignments
@@ -640,10 +658,10 @@ rule rpvg:
     input:
         xg = 'output/vg/autoindex/{identity}.{segment}.merged_graph.xg',
         gbwt = 'output/vg/gbwt/{identity}.{segment}.gbwt',
-        gam = 'output/vg/vg_map/{identity}.{segment}.map.gam',
-        merged = 'output/vg/merged_graph/{identity}.{segment}.merged_graph.vg'
+        gam = 'output/vg/vg_map/{identity}.{segment}.map.gam'
     output:
-        'output/rpvg/{identity}.{segment}.txt'
+        txt = 'output/rpvg/{identity}.{segment}.txt'
+        merged = 'output/vg/merged_graph/{identity}.{segment}.merged_graph.vg'
     log:
         'output/logs/rpvg/{identity}.{segment}.rpvg.log'
     resources:
@@ -655,7 +673,7 @@ rule rpvg:
         '-g {input.xg} '
         '-p {input.gbwt} '
         '-a {input.gam} '
-        '-i {input.merged} '
+        '-i '
         '-o {output} '
         '2> {log}'
 
