@@ -654,28 +654,28 @@ rule vg_stat_gam:
 
 
 # infers path posterior probabilities and abundances from variation graph read alignments
-rule rpvg:
-    input:
-        xg = 'output/vg/autoindex/{identity}.{segment}.merged_graph.xg',
-        gbwt = 'output/vg/gbwt/{identity}.{segment}.gbwt',
-        gam = 'output/vg/vg_map/{identity}.{segment}.map.gam'
-    output:
-        txt = 'output/rpvg/{identity}.{segment}.txt'
-        merged = 'output/vg/merged_graph/{identity}.{segment}.merged_graph.vg'
-    log:
-        'output/logs/rpvg/{identity}.{segment}.rpvg.log'
-    resources:
-        time = '0-0:5:00'
-    container: 
-        rpvg
-    shell:
-        'rpvg '
-        '-g {input.xg} '
-        '-p {input.gbwt} '
-        '-a {input.gam} '
-        '-i '
-        '-o {output} '
-        '2> {log}'
+# rule rpvg:
+    # input:
+        # xg = 'output/vg/autoindex/{identity}.{segment}.merged_graph.xg',
+        # gbwt = 'output/vg/gbwt/{identity}.{segment}.gbwt',
+        # gam = 'output/vg/vg_map/{identity}.{segment}.map.gam'
+    # output:
+        # txt = 'output/rpvg/{identity}.{segment}.txt'
+        # merged = 'output/vg/merged_graph/{identity}.{segment}.merged_graph.vg'
+    # log:
+        # 'output/logs/rpvg/{identity}.{segment}.rpvg.log'
+    # resources:
+        # time = '0-0:5:00'
+    # container: 
+        # rpvg
+    # shell:
+        # 'rpvg '
+        # '-g {input.xg} '
+        # '-p {input.gbwt} '
+        # '-a {input.gam} '
+        # '-i '
+        # '-o {output} '
+        # '2> {log}'
 
 
 
