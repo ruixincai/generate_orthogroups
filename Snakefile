@@ -10,7 +10,7 @@ pggb = 'docker://ghcr.io/pangenome/pggb:20230113201558a9a04c'
 
 vg = 'docker://quay.io/vgteam/vg:v1.47.0'
 
-samtools = 'docker pull quay.io/biocontainers/samtools:1.3.1--h0cf4675_11'
+samtools = 'docker://quay.io/biocontainers/samtools:1.3.1--h0cf4675_11'
 
 ref_proteomes = {
     'aalb': Path(proteomes_directory,
