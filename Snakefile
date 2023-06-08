@@ -712,9 +712,9 @@ rule samtools:
 	output:
 		'output/samtools/{identity}.{segment}.txt'
 	log:
-        'output/logs/samtools/{identity}.{segment}.log'
-    resources:
-        time = '0-0:5:00'
+		'output/logs/samtools/{identity}.{segment}.log'
+	resources:
+		time = '0-0:5:00'
     container: 
     	samtools
     shell:
