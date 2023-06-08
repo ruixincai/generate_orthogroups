@@ -10,7 +10,7 @@ pggb = 'docker://ghcr.io/pangenome/pggb:20230113201558a9a04c'
 
 vg = 'docker://quay.io/vgteam/vg:v1.47.0'
 
-rpvg = 'docker://quay.io/jonassibbesen/rpvg'
+samtools = 'docker pull quay.io/biocontainers/samtools:1.3.1--h0cf4675_11'
 
 ref_proteomes = {
     'aalb': Path(proteomes_directory,
@@ -290,7 +290,7 @@ def gfa_input(wildcards):
 # test vg on 10 orthogroups with different identity and segment length
 rule vg_test: 
     input:
-        expand('output/vg/vg_surject/{identity}.{segment}.map.bam',
+        expand('output/samtools/{identity}.{segment}.txt',
             identity=[85, 90, 95, 60, 70, 80],
             segment=[100, 300, 3000])
 
@@ -702,6 +702,26 @@ rule vg_surject:
         '> {output} '
         '2> {log}'
 
+# vg view -a 60.100.map.gam
+
+
+# count the alignments
+rule samtools:
+	input:
+		'output/vg/vg_surject/{identity}.{segment}.map.bam'
+	output:
+		'output/samtools/{identity}.{segment}.txt'
+	log:
+        'output/logs/samtools/{identity}.{segment}.log'
+    resources:
+        time = '0-0:5:00'
+    container: 
+    	samtools
+    shell:
+    	'samtools view '
+    	'{input} | wc -l '
+    	'> {output} '
+    	'2> {log}'
         
 
 rule aggregate:
