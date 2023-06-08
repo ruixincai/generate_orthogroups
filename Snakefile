@@ -715,9 +715,9 @@ rule samtools:
 		'output/logs/samtools/{identity}.{segment}.log'
 	resources:
 		time = '0-0:5:00'
-    container: 
-    	samtools
-    shell:
+	container: 
+		samtools
+	shell:
     	'samtools view '
     	'{input} | wc -l '
     	'> {output} '
