@@ -718,7 +718,7 @@ rule samtools:
 	container: 
 		samtools
 	shell:
-    	'samtools view '
+		'samtools view '
     	'{input} | wc -l '
     	'> {output} '
     	'2> {log}'
