@@ -290,7 +290,7 @@ def gfa_input(wildcards):
 # test vg on 10 orthogroups with different identity and segment length
 rule vg_test: 
     input:
-        expand('output/vg/vg_sortedbam/{identity}.{segment}.map.bam',
+        expand('output/sortedbam/{identity}.{segment}.sorted.bam',
             identity=[85, 90, 95, 60, 70, 80],
             segment=[100, 300, 3000])
 
@@ -706,14 +706,14 @@ rule vg_stat_gam:
 # vg view -a 60.100.map.gam
 
 
-# sorted bam files
-rule vg_sortedbam:
+# get bam files
+rule vg_bam:
 	input:
 		gam = 'output/vg/vg_map/{identity}.{segment}.map.gam'
 	output:
-		'output/vg/vg_sortedbam/{identity}.{segment}.map.bam'
+		'output/vg/vg_bam/{identity}.{segment}.map.bam'
 	log:
-		'output/logs/vg/vg_sortedbam/{identity}.{segment}.log'
+		'output/logs/vg/vg_bam/{identity}.{segment}.log'
 	threads:
 		lambda wildcards, attempt: 10 * attempt
 	resources:
@@ -727,10 +727,31 @@ rule vg_sortedbam:
 		'2> {log}'
 
 
+# get sorted bam files
+rule sortedbam:
+	input:
+		'output/vg/vg_bam/{identity}.{segment}.map.bam'
+	output:
+		'output/sortedbam/{identity}.{segment}.sorted.bam'
+	log:
+		'output/logs/sortedbam/{identity}.{segment}.log'
+	threads:
+		lambda wildcards, attempt: 10 * attempt
+	resources:
+		time = lambda wildcards, attempt: 10 * attempt
+	container:
+		samtools
+	shell:
+		'samtools sort '
+		'{input} '
+		'-o {output} '
+		'2> {log}'
+
+
 # count the alignments
 # rule samtools:
 	# input:
-		# 'output/vg/vg_surject/{identity}.{segment}.map.bam'
+		# 'output/vg/vg_sortedbam/{identity}.{segment}.map.bam'
 	# output:
 		# 'output/samtools/{identity}.{segment}.txt'
 	# log:
