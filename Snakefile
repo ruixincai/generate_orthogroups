@@ -290,7 +290,7 @@ def gfa_input(wildcards):
 # test vg on 10 orthogroups with different identity and segment length
 rule vg_test: 
     input:
-        expand('output/samtools/{identity}.{segment}.txt',
+        expand('output/vg/vg_sortedbam/{identity}.{segment}.map.bam',
             identity=[85, 90, 95, 60, 70, 80],
             segment=[100, 300, 3000])
 
@@ -681,28 +681,50 @@ rule vg_stat_gam:
 
 
 # convert gam files to bam files
-rule vg_surject:
-    input:
-        xg = 'output/vg/autoindex/{identity}.{segment}.merged_graph.xg',
-        gam = 'output/vg/vg_map/{identity}.{segment}.map.gam'
-    output:
-        'output/vg/vg_surject/{identity}.{segment}.map.bam'
-    log:
-        'output/logs/vg/vg_surject/{identity}.{segment}.vg_surject.log'
-    threads:    
-        lambda wildcards, attempt: 10 * attempt
-    resources:  
-        time = lambda wildcards, attempt: 10 * attempt
-    container: 
-        vg
-    shell:
-        'vg surject '
-        '-x {input.xg} '
-        '-b {input.gam} '
-        '> {output} '
-        '2> {log}'
+# rule vg_surject:
+    # input:
+        # xg = 'output/vg/autoindex/{identity}.{segment}.merged_graph.xg',
+        # gam = 'output/vg/vg_map/{identity}.{segment}.map.gam'
+    # output:
+        # 'output/vg/vg_surject/{identity}.{segment}.map.bam'
+    # log:
+        # 'output/logs/vg/vg_surject/{identity}.{segment}.vg_surject.log'
+    # threads:    
+        # lambda wildcards, attempt: 10 * attempt
+    # resources:  
+        # time = lambda wildcards, attempt: 10 * attempt
+    # container: 
+        # vg
+    # shell:
+        # 'vg surject '
+        # '-x {input.xg} '
+        # '-b {input.gam} '
+        # '> {output} '
+        # '2> {log}'
+
 
 # vg view -a 60.100.map.gam
+
+
+# sorted bam files
+rulr vg_sortedbam:
+	input:
+		gam = 'output/vg/vg_map/{identity}.{segment}.map.gam'
+	output:
+		'output/vg/vg_sortedbam/{identity}.{segment}.map.bam'
+	log:
+		'output/logs/vg/vg_sortedbam/{identity}.{segment}.vg_surject.log'
+	threads:
+		lambda wildcards, attempt: 10 * attempt
+	resources:
+		time = lambda wildcards, attempt: 10 * attempt
+	container:
+		vg
+		samtools
+	shell:
+		'vg view '
+		'-a {input.gam} | samtools sort -o {output} '
+		'2> {log}'
 
 
 # count the alignments
