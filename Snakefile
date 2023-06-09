@@ -290,7 +290,7 @@ def gfa_input(wildcards):
 # test vg on 10 orthogroups with different identity and segment length
 rule vg_test: 
     input:
-        expand('output/sortedbam/{identity}.{segment}.sorted.bam',
+        expand('output/vg/vg_bam/{identity}.{segment}.map.bam',
             identity=[85, 90, 95, 60, 70, 80],
             segment=[100, 300, 3000])
 
