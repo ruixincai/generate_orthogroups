@@ -728,24 +728,24 @@ rule vg_sortedbam:
 
 
 # count the alignments
-rule samtools:
-	input:
-		'output/vg/vg_surject/{identity}.{segment}.map.bam'
-	output:
-		'output/samtools/{identity}.{segment}.txt'
-	log:
-		'output/logs/samtools/{identity}.{segment}.log'
-	resources:
-		time = '0-0:5:00'
-	container: 
-		samtools
-	shell:
-		'samtools view '
-		'-c '
-		'-F 2 '
-    	'{input} '
-    	'> {output} '
-    	'2> {log}'
+# rule samtools:
+	# input:
+		# 'output/vg/vg_surject/{identity}.{segment}.map.bam'
+	# output:
+		# 'output/samtools/{identity}.{segment}.txt'
+	# log:
+		# 'output/logs/samtools/{identity}.{segment}.log'
+	# resources:
+		# time = '0-0:5:00'
+	# container: 
+		# samtools
+	# shell:
+		# 'samtools view '
+		# '-c '
+		# '-F 2 '
+    	# '{input} '
+    	# '> {output} '
+    	# '2> {log}'
         
 
 rule aggregate:
