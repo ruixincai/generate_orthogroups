@@ -720,7 +720,6 @@ rule vg_sortedbam:
 		time = lambda wildcards, attempt: 10 * attempt
 	container:
 		vg
-		samtools
 	shell:
 		'vg view '
 		'-a {input.gam} | samtools sort -o {output} '
