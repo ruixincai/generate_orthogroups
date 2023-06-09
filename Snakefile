@@ -719,7 +719,9 @@ rule samtools:
 		samtools
 	shell:
 		'samtools view '
-    	'{input} | wc -l '
+		'-c '
+		'-F 2 '
+    	'{input} '
     	'> {output} '
     	'2> {log}'
         
