@@ -707,7 +707,7 @@ rule vg_stat_gam:
 
 
 # sorted bam files
-rulr vg_sortedbam:
+rule vg_sortedbam:
 	input:
 		gam = 'output/vg/vg_map/{identity}.{segment}.map.gam'
 	output:
