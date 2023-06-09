@@ -713,7 +713,7 @@ rule vg_sortedbam:
 	output:
 		'output/vg/vg_sortedbam/{identity}.{segment}.map.bam'
 	log:
-		'output/logs/vg/vg_sortedbam/{identity}.{segment}.vg_surject.log'
+		'output/logs/vg/vg_sortedbam/{identity}.{segment}.log'
 	threads:
 		lambda wildcards, attempt: 10 * attempt
 	resources:
@@ -722,7 +722,8 @@ rule vg_sortedbam:
 		vg
 	shell:
 		'vg view '
-		'-a {input.gam} | samtools sort -o {output} '
+		'-a {input.gam} '
+		'> {output} '
 		'2> {log}'
 
 
