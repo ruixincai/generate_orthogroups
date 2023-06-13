@@ -682,7 +682,7 @@ rule vg_stat_gam:
 
 rule rpvg:
     input:
-        gfa = 'output/vg/merged_graph_gfa/{identity}.{segment}.merged_graph.gfa'
+        gfa = 'output/vg/merged_graph_gfa/{identity}.{segment}.merged_graph.gfa',
         gam = 'output/vg/vg_map/{identity}.{segment}.map.gam'
     output:
         'output/rpvg/{identity}.{segment}.txt'
