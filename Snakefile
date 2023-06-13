@@ -689,8 +689,10 @@ rule rpvg:
         'output/rpvg/{identity}.{segment}.txt'
     log:
         'output/logs/rpvg/{identity}.{segment}.rpvg.log'
-    resources:
-        time = '0-0:5:00'
+    threads:    
+        lambda wildcards, attempt: 10 * attempt
+    resources:  
+        time = lambda wildcards, attempt: 10 * attempt
     container: 
         rpvg
     shell:
