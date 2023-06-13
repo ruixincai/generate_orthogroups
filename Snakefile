@@ -700,7 +700,7 @@ rule rpvg:
         '-g {input.gfa} '
         '-p {input.gbwt} '
         '-a {input.gam} '
-        '-i haplotypes '
+        '-i transcripts '
         '-o {output} '
         '2> {log}'
 
