@@ -698,6 +698,7 @@ rule rpvg:
         '-g {input.gfa} '
         '-p {input.gbwt} '
         '-a {input.gam} '
+        '-i haplotypes '
         '-o {output} '
         '2> {log}'
 
