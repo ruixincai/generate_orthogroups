@@ -682,7 +682,7 @@ rule vg_stat_gam:
 
 rule rpvg:
     input:
-        gfa = 'output/vg/merged_graph_gfa/{identity}.{segment}.merged_graph.gfa',
+        xg = 'output/vg/autoindex/{identity}.{segment}.merged_graph.xg',
         gbwt = 'output/vg/gbwt/{identity}.{segment}.gbwt',
         gam = 'output/vg/vg_map/{identity}.{segment}.map.gam'
     output:
@@ -696,8 +696,8 @@ rule rpvg:
     container: 
         rpvg
     shell:
-        'rpvg count '
-        '-g {input.gfa} '
+        'rpvg '
+        '-g {input.xg} '
         '-p {input.gbwt} '
         '-a {input.gam} '
         '-i transcripts '
