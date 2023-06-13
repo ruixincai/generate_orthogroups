@@ -12,6 +12,8 @@ vg = 'docker://quay.io/vgteam/vg:v1.47.0'
 
 samtools = 'docker://quay.io/biocontainers/samtools:1.3.1--h0cf4675_11'
 
+rpvg = 'docker://quay.io/jonassibbesen/rpvg'
+
 ref_proteomes = {
     'aalb': Path(proteomes_directory,
                  'GCF_006496715.1_Aalbo_primary.1_protein.faa'),
@@ -290,7 +292,7 @@ def gfa_input(wildcards):
 # test vg on 10 orthogroups with different identity and segment length
 rule vg_test: 
     input:
-        expand('output/vg/vg_bam/{identity}.{segment}.map.bam',
+        expand('output/rpvg/{identity}.{segment}.txt',
             identity=[85, 90, 95, 60, 70, 80],
             segment=[100, 300, 3000])
 
@@ -677,6 +679,25 @@ rule vg_stat_gam:
         # '-o {output} '
         # '2> {log}'
 
+
+rule rpvg:
+    input:
+        gfa = 'output/vg/merged_graph_gfa/{identity}.{segment}.merged_graph.gfa'
+        gam = 'output/vg/vg_map/{identity}.{segment}.map.gam'
+    output:
+        'output/rpvg/{identity}.{segment}.txt'
+    log:
+        'output/logs/rpvg/{identity}.{segment}.rpvg.log'
+    resources:
+        time = '0-0:5:00'
+    container: 
+        rpvg
+    shell:
+        'rpvg count '
+        '-g {input.gfa} '
+        '-a {input.gam} '
+        '-o {output} '
+        '2> {log}'
 
 
 
