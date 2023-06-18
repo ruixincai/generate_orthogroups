@@ -292,7 +292,7 @@ def gfa_input(wildcards):
 # test vg on 10 orthogroups with different identity and segment length
 rule vg_test: 
     input:
-        expand('output/vg/vg_map/SRR8284027/{identity}.{segment}.map.gam',
+        expand('output/vg/vg_map/SRR1645076/{identity}.{segment}.map.gam',
             identity=[85, 90, 95, 60, 70, 80],
             segment=[100, 300, 3000])
 
@@ -591,9 +591,9 @@ rule vg_autoindex:
 rule vg_map:
     input:
         rules.vg_autoindex.output,
-        fastq = 'data/RNA_seq/SRR8284027.fq'
+        fastq = 'data/RNA_seq/SRR1645076.fq'
     output:
-        'output/vg/vg_map/SRR8284027/{identity}.{segment}.map.gam'
+        'output/vg/vg_map/SRR1645076/{identity}.{segment}.map.gam'
     params:
         prefix = 'output/vg/autoindex/{identity}.{segment}.merged_graph'
     log:
