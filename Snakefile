@@ -292,7 +292,7 @@ def gfa_input(wildcards):
 # test vg on 10 orthogroups with different identity and segment length
 rule vg_test: 
     input:
-        expand('output/vg/vg_map/SRR1645076/{identity}.{segment}.map.gam',
+        expand('output/vg/vg_bam/SRR1645076/{identity}.{segment}.map.bam',
             identity=[85, 90, 95, 60, 70, 80],
             segment=[100, 300, 3000])
 
@@ -732,14 +732,15 @@ rule rpvg:
 # vg view -a 60.100.map.gam
 
 
-# get bam files
+# convert gam files to bam files
 rule vg_bam:
 	input:
-		gam = 'output/vg/vg_map/{identity}.{segment}.map.gam'
+		xg = 'output/vg/autoindex/{identity}.{segment}.merged_graph.xg',
+		gam = 'output/vg/vg_map/SRR1645076/{identity}.{segment}.map.gam'
 	output:
-		'output/vg/vg_bam/{identity}.{segment}.map.bam'
+		'output/vg/vg_bam/SRR1645076/{identity}.{segment}.map.bam'
 	log:
-		'output/logs/vg/vg_bam/{identity}.{segment}.log'
+		'output/logs/vg/vg_bam/SRR1645076/{identity}.{segment}.log'
 	threads:
 		lambda wildcards, attempt: 10 * attempt
 	resources:
@@ -748,7 +749,8 @@ rule vg_bam:
 		vg
 	shell:
 		'vg surject '
-		'-a {input.gam} '
+		'-x {input.xg} '
+		'-b {input.gam} '
 		'> {output} '
 		'2> {log}'
 
